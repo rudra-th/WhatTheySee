@@ -291,6 +291,11 @@
     if (reduceMotion) setEdgeStage(2, { scroll: false });
   }
 
+  function formatCoordinate(value, positive, negative) {
+    if (typeof value !== "number" || !Number.isFinite(value)) return null;
+    return `${Math.abs(value).toFixed(4)}° ${value >= 0 ? positive : negative}`;
+  }
+
   function renderHero(snapshot, score) {
     const hash = snapshot.fingerprint.hash || "";
     if (els.heroFingerprint) {
@@ -310,6 +315,18 @@
     if (els.heroNetworkType) {
       els.heroNetworkType.textContent = snapshot.networkDisplay || (snapshot.network.online ? "Network type hidden" : "Offline");
       els.heroNetworkType.title = `${snapshot.typeDisplay}${snapshot.providerDisplay ? ` · ${snapshot.providerDisplay}` : ""} · SSID hidden`;
+    }
+    if (els.heroCoordA) {
+      const latitude = formatCoordinate(snapshot.network.latitude, "N", "S");
+      els.heroCoordA.textContent = latitude || "—° N";
+      els.heroCoordA.hidden = !latitude;
+      if (latitude) els.heroCoordA.title = "Approximate IP latitude — not GPS";
+    }
+    if (els.heroCoordB) {
+      const longitude = formatCoordinate(snapshot.network.longitude, "E", "W");
+      els.heroCoordB.textContent = longitude || "—° E";
+      els.heroCoordB.hidden = !longitude;
+      if (longitude) els.heroCoordB.title = "Approximate IP longitude — not GPS";
     }
     if (els.heroDisplay) {
       els.heroDisplay.textContent = snapshot.display.screenWidth
@@ -1084,6 +1101,11 @@
   function initReveal() {
     const elements = $$(".reveal");
     if (!elements.length) return;
+    // The hero is always above the fold. Start its entrance immediately so
+    // content never waits on an IntersectionObserver callback.
+    elements.forEach((element) => {
+      if (element.closest(".hero")) element.classList.add("is-visible");
+    });
     if (reduceMotion || typeof IntersectionObserver !== "function") {
       elements.forEach((element) => element.classList.add("is-visible"));
       return;
@@ -1096,7 +1118,50 @@
         }
       });
     }, { threshold: 0.08, rootMargin: "0px 0px -7% 0px" });
-    elements.forEach((element) => observer.observe(element));
+    elements.forEach((element) => {
+      if (!element.classList.contains("is-visible")) observer.observe(element);
+    });
+  }
+
+  function initHeroMotion() {
+    const visual = $(".hero-visual");
+    const card = $(".hero-card");
+    if (!visual || !card || reduceMotion) return;
+
+    let frame = 0;
+    let latest = null;
+
+    const apply = () => {
+      frame = 0;
+      if (!latest) return;
+      const rect = visual.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const x = Math.min(1, Math.max(0, (latest.clientX - rect.left) / rect.width));
+      const y = Math.min(1, Math.max(0, (latest.clientY - rect.top) / rect.height));
+      visual.style.setProperty("--mx", `${(x * 100).toFixed(2)}%`);
+      visual.style.setProperty("--my", `${(y * 100).toFixed(2)}%`);
+      card.style.setProperty("--rx", `${((0.5 - y) * 4.5).toFixed(2)}deg`);
+      card.style.setProperty("--ry", `${((x - 0.5) * 6).toFixed(2)}deg`);
+    };
+
+    const reset = () => {
+      latest = null;
+      if (frame) window.cancelAnimationFrame(frame);
+      frame = 0;
+      visual.style.removeProperty("--mx");
+      visual.style.removeProperty("--my");
+      card.style.setProperty("--rx", "0deg");
+      card.style.setProperty("--ry", "0deg");
+    };
+
+    visual.addEventListener("pointermove", (event) => {
+      if (event.pointerType === "touch") return;
+      latest = event;
+      if (!frame) frame = window.requestAnimationFrame(apply);
+    }, { passive: true });
+
+    visual.addEventListener("pointerleave", reset);
+    visual.addEventListener("pointercancel", reset);
   }
 
   function bindEvents() {
@@ -1227,7 +1292,7 @@
       "themeToggle", "menuButton", "mainNav", "scrollProgress", "siteHeader",
       "heroStatus", "heroStatusText", "heroStatusMeta", "heroSignals", "heroPermissions", "heroRequests", "heroRequestsLabel",
       "heroFingerprint", "heroBrowser", "heroScore", "heroScoreLabel", "heroRing", "heroLocation", "heroIsp",
-      "heroTime", "heroNetworkType", "heroDisplay", "heroHash", "heroFindings",
+      "heroTime", "heroNetworkType", "heroDisplay", "heroHash", "heroFindings", "heroCoordA", "heroCoordB",
       "scanBadge", "scanStatusText", "scanTimestamp", "rescanBtn", "openLedger", "exportJson", "scoreValue",
       "scoreDial", "scoreBand", "scoreCopy", "scoreConfidence", "categoryBars", "manifestDevice", "manifestBrowser",
       "manifestPlatform", "manifestScreen", "manifestGpu", "manifestTouch", "receiptIp", "receiptLocation",
@@ -1257,6 +1322,7 @@
     renderFixes();
     bindEvents();
     initReveal();
+    initHeroMotion();
     onScroll();
 
     window.addEventListener("scroll", () => {

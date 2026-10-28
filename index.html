@@ -108,121 +108,137 @@
          HERO
     ====================================================== -->
     <section class="hero" aria-labelledby="heroTitle">
-      <div class="hero-copy">
+      <div class="hero-head">
         <div class="eyebrow reveal">
           <span class="eyebrow-index">FIELD NOTE / 001</span>
           <span class="eyebrow-rule"></span>
           <span>PASSIVE BROWSER AUDIT</span>
+          <span class="eyebrow-live"><span class="live-dot"></span>LIVE</span>
         </div>
-        <h1 id="heroTitle" class="reveal reveal-delay-1">You see a website.<br><span class="gradient-text">They see a signature.</span></h1>
-        <p class="hero-lede reveal reveal-delay-2">Before the first click, your browser introduced itself. This page just listened. No permissions. No pop-ups. No login.</p>
-
-        <div class="hero-actions reveal reveal-delay-3">
-          <a class="button button-primary" href="#scan">
-            Open my scan
-            <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
-          </a>
-          <a class="button button-ghost" href="#fix">
-            Close the gap
-            <span class="button-key">06</span>
-          </a>
-        </div>
-
-        <div class="hero-status reveal reveal-delay-4" id="heroStatus" role="status" aria-live="polite">
-          <span class="scan-pulse" aria-hidden="true"></span>
-          <span id="heroStatusText">Receiving passive signals…</span>
-          <span class="hero-status-count" id="heroStatusMeta">0 / 40</span>
-        </div>
-
-        <div class="hero-stats reveal reveal-delay-4" aria-label="Visit facts">
-          <div class="hero-stat">
-            <strong id="heroSignals">—</strong>
-            <span>signals observed</span>
-          </div>
-          <div class="hero-stat">
-            <strong id="heroPermissions">0</strong>
-            <span>permissions asked</span>
-          </div>
-          <div class="hero-stat">
-            <strong id="heroRequests">1</strong>
-            <span id="heroRequestsLabel">external request</span>
-          </div>
-        </div>
+        <h1 id="heroTitle" class="hero-title">
+          <span class="hero-title-line"><span>You see a website.</span></span>
+          <span class="hero-title-line"><span class="hero-title-gradient">They see a signature.</span></span>
+        </h1>
       </div>
 
-      <div class="hero-visual reveal reveal-delay-2" aria-label="Live exposure summary">
-        <div class="signal-orbit orbit-a" aria-hidden="true"></div>
-        <div class="signal-orbit orbit-b" aria-hidden="true"></div>
-        <div class="signal-orbit orbit-c" aria-hidden="true"></div>
-        <div class="radar-sweep" aria-hidden="true"></div>
-        <span class="hero-coord coord-a">31.0521° N</span>
-        <span class="hero-coord coord-b">76.5741° E</span>
+      <div class="hero-body">
+        <div class="hero-copy">
+          <p class="hero-lede reveal reveal-delay-2">Before the first click, your browser introduced itself. This page just listened. No permissions. No pop-ups. No login.</p>
 
-        <article class="hero-card">
-          <div class="hero-card-top">
-            <span class="mono-label">PASSIVE CAPTURE / LIVE</span>
-            <span class="chip chip-mint"><span class="live-dot"></span>OBSERVING</span>
+          <div class="hero-actions reveal reveal-delay-3">
+            <a class="button button-primary" href="#scan">
+              Open my scan
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </a>
+            <a class="button button-ghost" href="#fix">
+              Close the gap
+              <span class="button-key">06</span>
+            </a>
           </div>
 
-          <div class="hero-profile-head">
-            <div class="profile-glyph" aria-hidden="true">
-              <svg viewBox="0 0 72 72" fill="none">
-                <circle cx="36" cy="36" r="27" stroke="currentColor" stroke-opacity=".18"/>
-                <circle cx="36" cy="36" r="20" stroke="currentColor" stroke-opacity=".32" stroke-dasharray="3 4"/>
-                <circle cx="36" cy="36" r="11" stroke="currentColor" stroke-opacity=".7"/>
-                <circle cx="36" cy="36" r="4.5" fill="currentColor"/>
-                <path d="M36 4v8M36 60v8M4 36h8M60 36h8" stroke="currentColor" stroke-linecap="round"/>
-                <circle cx="54" cy="18" r="2.5" fill="var(--mint)"/>
-              </svg>
-            </div>
-            <div>
-              <span class="micro">OBSERVED IDENTITY</span>
-              <h2 class="hero-hash" id="heroFingerprint">Computing signature…</h2>
-              <p class="hero-browser" id="heroBrowser">Reading the browser surface…</p>
-            </div>
+          <div class="hero-status reveal reveal-delay-4" id="heroStatus" role="status" aria-live="polite">
+            <span class="scan-pulse" aria-hidden="true"></span>
+            <span id="heroStatusText">Receiving passive signals…</span>
+            <span class="hero-status-count" id="heroStatusMeta">0 / 40</span>
           </div>
 
-          <div class="hero-score-block">
-            <div class="score-orb" id="heroRing" style="--score:0" aria-hidden="true">
-              <div class="score-orb-inner">
-                <strong id="heroScore">—</strong>
-                <span>/ 100</span>
+          <div class="hero-stats reveal reveal-delay-4" role="group" aria-label="Visit facts">
+            <div class="hero-stat">
+              <strong id="heroSignals">—</strong>
+              <span>signals observed</span>
+            </div>
+            <div class="hero-stat">
+              <strong id="heroPermissions">0</strong>
+              <span>permissions asked</span>
+            </div>
+            <div class="hero-stat">
+              <strong id="heroRequests">1</strong>
+              <span id="heroRequestsLabel">external request</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal reveal-delay-2" role="group" aria-label="Live exposure summary">
+          <div class="hero-aura" aria-hidden="true"></div>
+          <div class="hero-spotlight" aria-hidden="true"></div>
+          <div class="signal-orbit orbit-a" aria-hidden="true"></div>
+          <div class="signal-orbit orbit-b" aria-hidden="true"></div>
+          <div class="signal-orbit orbit-c" aria-hidden="true"></div>
+          <div class="radar-sweep" aria-hidden="true"></div>
+          <span class="hero-coord coord-a" id="heroCoordA">—° N</span>
+          <span class="hero-coord coord-b" id="heroCoordB">—° E</span>
+
+          <article class="hero-card">
+            <div class="hero-card-top">
+              <span class="mono-label">PASSIVE CAPTURE / LIVE</span>
+              <span class="chip chip-mint"><span class="live-dot"></span>OBSERVING</span>
+            </div>
+
+            <div class="hero-profile-head">
+              <div class="profile-glyph" aria-hidden="true">
+                <svg viewBox="0 0 72 72" fill="none">
+                  <circle cx="36" cy="36" r="27" stroke="currentColor" stroke-opacity=".18"/>
+                  <circle cx="36" cy="36" r="20" stroke="currentColor" stroke-opacity=".32" stroke-dasharray="3 4"/>
+                  <circle cx="36" cy="36" r="11" stroke="currentColor" stroke-opacity=".7"/>
+                  <circle cx="36" cy="36" r="4.5" fill="currentColor"/>
+                  <path d="M36 4v8M36 60v8M4 36h8M60 36h8" stroke="currentColor" stroke-linecap="round"/>
+                  <circle cx="54" cy="18" r="2.5" fill="var(--mint)"/>
+                </svg>
+              </div>
+              <div>
+                <span class="micro">OBSERVED IDENTITY</span>
+                <h2 class="hero-hash" id="heroFingerprint">Computing signature…</h2>
+                <p class="hero-browser" id="heroBrowser">Reading the browser surface…</p>
               </div>
             </div>
-            <div class="hero-score-copy">
-              <span class="micro">EXPOSURE INDEX</span>
-              <strong id="heroScoreLabel">Mapping your surface</strong>
-              <p>A weighted reading of what was exposed — not a verdict on who you are.</p>
+
+            <div class="hero-score-block">
+              <div class="score-orb" id="heroRing" style="--score:0" aria-hidden="true">
+                <div class="score-orb-inner">
+                  <strong id="heroScore">—</strong>
+                  <span>/ 100</span>
+                </div>
+              </div>
+              <div class="hero-score-copy">
+                <span class="micro">EXPOSURE INDEX</span>
+                <strong id="heroScoreLabel">Mapping your surface</strong>
+                <p>A weighted reading of what was exposed — not a verdict on who you are.</p>
+              </div>
             </div>
-          </div>
 
-          <div class="hero-findings" id="heroFindings">
-            <div class="hero-finding is-loading"><span class="finding-kicker">LOCATION</span><span class="finding-value" id="heroLocation">Awaiting IP lookup…</span><span class="finding-state">VISIBLE</span></div>
-            <div class="hero-finding"><span class="finding-kicker">NETWORK</span><span class="finding-value" id="heroIsp">Consulting the network…</span><span class="finding-state">VISIBLE</span></div>
-            <div class="hero-finding"><span class="finding-kicker">LOCAL TIME</span><span class="finding-value" id="heroTime">—:—</span><span class="finding-state finding-state-soft">INFERRED</span></div>
-          </div>
+            <div class="hero-findings" id="heroFindings">
+              <div class="hero-finding is-loading"><span class="finding-kicker">LOCATION</span><span class="finding-value" id="heroLocation">Awaiting IP lookup…</span><span class="finding-state">VISIBLE</span></div>
+              <div class="hero-finding"><span class="finding-kicker">NETWORK</span><span class="finding-value" id="heroIsp">Consulting the network…</span><span class="finding-state">VISIBLE</span></div>
+              <div class="hero-finding"><span class="finding-kicker">LOCAL TIME</span><span class="finding-value" id="heroTime">—:—</span><span class="finding-state finding-state-soft">INFERRED</span></div>
+            </div>
 
-          <div class="hero-card-foot">
-            <span><span class="tiny-dot"></span>HASH BUILT LOCALLY</span>
-            <code id="heroHash">SHA-256 / pending</code>
-          </div>
-        </article>
+            <div class="hero-card-foot">
+              <span><span class="tiny-dot"></span>HASH BUILT LOCALLY</span>
+              <code id="heroHash">SHA-256 / pending</code>
+            </div>
+          </article>
 
-        <div class="float-receipt float-receipt-a">
-          <span class="micro">NETWORK</span>
-          <strong id="heroNetworkType">Discovering…</strong>
-          <span class="float-note">SSID stays in the OS</span>
-        </div>
-        <div class="float-receipt float-receipt-b">
-          <span class="micro">DISPLAY</span>
-          <strong id="heroDisplay">— × —</strong>
-          <span class="float-note">viewport + pixel ratio</span>
-        </div>
-        <div class="hero-caption">
-          <span class="caption-line"></span>
-          <span>THE INSTRUMENT SEES BACK</span>
+          <div class="float-receipt float-receipt-a">
+            <span class="micro">NETWORK</span>
+            <strong id="heroNetworkType">Discovering…</strong>
+            <span class="float-note">SSID stays in the OS</span>
+          </div>
+          <div class="float-receipt float-receipt-b">
+            <span class="micro">DISPLAY</span>
+            <strong id="heroDisplay">— × —</strong>
+            <span class="float-note">viewport + pixel ratio</span>
+          </div>
+          <div class="hero-caption">
+            <span class="caption-line"></span>
+            <span>THE INSTRUMENT SEES BACK</span>
+          </div>
         </div>
       </div>
+
+      <a class="hero-scroll" href="#scan" aria-label="Skip to the passive scan">
+        <span>SCROLL TO EXPOSE</span>
+        <span class="scroll-track" aria-hidden="true"><span></span></span>
+      </a>
     </section>
 
     <div class="ticker" aria-hidden="true">
@@ -302,7 +318,7 @@
                 <p id="scoreCopy">Counting the signals your browser hands over by default.</p>
               </div>
             </div>
-            <div class="category-bars" id="categoryBars" aria-label="Exposure by category"></div>
+            <div class="category-bars" id="categoryBars" role="group" aria-label="Exposure by category"></div>
             <div class="panel-foot">
               <span>Signal availability, not risk.</span>
               <button class="inline-link" id="openMethodScore" type="button">How it’s scored <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
@@ -432,7 +448,7 @@
               <button class="text-link edge-skip" id="skipZoom" type="button">Skip the zoom <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
             </div>
 
-            <div class="edge-visual" aria-label="Stylised device reconstruction based on browser signals">
+            <div class="edge-visual" role="group" aria-label="Stylised device reconstruction based on browser signals">
               <div class="edge-halo" aria-hidden="true"></div>
               <div class="device-viewport">
                 <div class="device-frame" id="deviceFrame" data-form="desktop" data-os="windows">
