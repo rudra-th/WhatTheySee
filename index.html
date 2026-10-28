@@ -1,0 +1,1136 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#060b13">
+  <meta name="description" content="WhatTheySee is a passive browser privacy audit. See the device, network and fingerprint signals every website can read — then close the gap. No permissions. No accounts. No scan data stored.">
+  <meta property="og:title" content="WhatTheySee — You see a website. They see a signature.">
+  <meta property="og:description" content="A passive exposure audit for your browser. See what a website can learn without asking, then lock it down.">
+  <meta property="og:type" content="website">
+  <title>WhatTheySee — The browser privacy mirror</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+  <script src="js/theme-init.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="page-grid" aria-hidden="true"></div>
+  <div class="ambient ambient-a" aria-hidden="true"></div>
+  <div class="ambient ambient-b" aria-hidden="true"></div>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <svg class="svg-sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+    <symbol id="i-network" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="2" y="16" width="6" height="5" rx="1"/><rect x="16" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M5 16v-2h14v2M12 12v2"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 5.2-8 12-8 12S4 15.2 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.8"/></symbol>
+    <symbol id="i-device" viewBox="0 0 24 24"><rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+    <symbol id="i-display" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 9h4M7 12h7"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.4 2.4 3.6 5.4 3.6 9S14.4 18.6 12 21M12 3c-2.4 2.4-3.6 5.4-3.6 9s1.2 6.6 3.6 9"/></symbol>
+    <symbol id="i-fingerprint" viewBox="0 0 24 24"><path d="M12 11a3 3 0 0 0-3 3c0 2-.6 4-2 6"/><path d="M15 14v1c0 2.1-.7 4.1-2 6"/><path d="M12 11c1.7 0 3 1.3 3 3v1.5"/><path d="M6.5 18C7.5 16.5 8 14.7 8 12a4 4 0 0 1 8 0v2"/><path d="M4.3 14c.5-1.8.7-3.5.7-5a7 7 0 0 1 14 0v1"/><path d="M18.7 13.5c.1-.8.3-1.7.3-2.5"/><path d="M8 6.5A6 6 0 0 1 20 11"/><path d="M6.2 9.5A8 8 0 0 1 20 12"/><path d="M17 20c1-1.4 1.6-3 1.8-4.7"/></symbol>
+    <symbol id="i-battery" viewBox="0 0 24 24"><rect x="2.5" y="7" width="17" height="10" rx="2"/><path d="M22 10v4"/><path d="M6 10h7"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.5 6.5-9.5 6.5S2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 10.7a2 2 0 0 0 2.7 2.7"/><path d="M9.8 5.4A10.5 10.5 0 0 1 12 5c5.5 0 9 7 9 7a16 16 0 0 1-2.8 3.4M6.1 6.2A17 17 0 0 0 3 12s3.5 7 9 7c1.2 0 2.4-.3 3.4-.8"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6l8-3Z"/><path d="m8.5 12 2.3 2.3 4.7-5"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.1"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M3 9a14 14 0 0 1 18 0M6.5 12.5a9 9 0 0 1 11 0M10 16a3.5 3.5 0 0 1 4 0"/><circle cx="12" cy="19" r=".8" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6Z"/><path d="M10 19a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="i-bluetooth" viewBox="0 0 24 24"><path d="m7 7 10 10-5 4V3l5 4L7 17"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6V3Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></symbol>
+    <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M18.5 17A8 8 0 0 1 5.6 18M5.5 7A8 8 0 0 1 18.4 6"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/></symbol>
+    <symbol id="i-scan" viewBox="0 0 24 24"><path d="M4 9V5a1 1 0 0 1 1-1h4M20 9V5a1 1 0 0 0-1-1h-4M4 15v4a1 1 0 0 0 1 1h4M20 15v4a1 1 0 0 1-1 1h-4"/><path d="M7 12h10"/></symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="2.5" y="4" width="19" height="16" rx="2"/><path d="m6 9 3 3-3 3M12 15h5"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14M10 11v6M14 11v6"/></symbol>
+  </svg>
+
+  <header class="site-header" id="top">
+    <a class="brand" href="#top" aria-label="WhatTheySee — back to top">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="15" stroke="currentColor" stroke-opacity=".26"/>
+          <circle cx="20" cy="20" r="11.5" stroke="currentColor" stroke-opacity=".55"/>
+          <path d="M7.5 20c2.9-5.2 7.1-7.8 12.5-7.8S29.6 14.8 32.5 20c-2.9 5.2-7.1 7.8-12.5 7.8S10.4 25.2 7.5 20Z" stroke="currentColor" stroke-width="1.35"/>
+          <circle cx="20" cy="20" r="4" fill="currentColor"/>
+          <circle cx="28.4" cy="11.6" r="1.9" fill="currentColor"/>
+          <path d="M20 2.5v3M20 34.5v3M2.5 20h3M34.5 20h3" stroke="currentColor" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span class="brand-copy">
+        <span class="brand-name">WHATTHEYSEE</span>
+        <span class="brand-sub">PASSIVE EXPOSURE LAB</span>
+      </span>
+    </a>
+
+    <nav class="main-nav" id="mainNav" aria-label="Primary">
+      <a href="#scan" data-nav="scan"><span>01</span>The scan</a>
+      <a href="#device" data-nav="device"><span>02</span>The device</a>
+      <a href="#fingerprint" data-nav="fingerprint"><span>04</span>Fingerprint</a>
+      <a href="#fix" data-nav="fix"><span>06</span>The fix</a>
+      <a href="#evidence" data-nav="evidence"><span>07</span>Evidence</a>
+    </nav>
+
+    <div class="header-actions">
+      <span class="local-pill"><span class="live-dot"></span>NO DATA STORED</span>
+      <button class="icon-button theme-toggle" id="themeToggle" type="button" aria-label="Switch to light mode" title="Switch theme">
+        <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun"/></svg>
+        <svg class="icon icon-moon" aria-hidden="true"><use href="#i-moon"/></svg>
+      </button>
+      <a class="button button-small button-primary header-cta" href="#scan">View my scan <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      <button class="icon-button menu-button" id="menuButton" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav">
+        <svg class="icon open-icon" aria-hidden="true"><use href="#i-menu"/></svg>
+        <svg class="icon close-icon" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-copy">
+        <div class="eyebrow reveal">
+          <span class="eyebrow-index">FIELD NOTE / 001</span>
+          <span class="eyebrow-rule"></span>
+          <span>PASSIVE BROWSER AUDIT</span>
+        </div>
+        <h1 id="heroTitle" class="reveal reveal-delay-1">You see a website.<br><span class="gradient-text">They see a signature.</span></h1>
+        <p class="hero-lede reveal reveal-delay-2">Before the first click, your browser introduced itself. This page just listened. No permissions. No pop-ups. No login.</p>
+
+        <div class="hero-actions reveal reveal-delay-3">
+          <a class="button button-primary" href="#scan">
+            Open my scan
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+          </a>
+          <a class="button button-ghost" href="#fix">
+            Close the gap
+            <span class="button-key">06</span>
+          </a>
+        </div>
+
+        <div class="hero-status reveal reveal-delay-4" id="heroStatus" role="status" aria-live="polite">
+          <span class="scan-pulse" aria-hidden="true"></span>
+          <span id="heroStatusText">Receiving passive signals…</span>
+          <span class="hero-status-count" id="heroStatusMeta">0 / 40</span>
+        </div>
+
+        <div class="hero-stats reveal reveal-delay-4" aria-label="Visit facts">
+          <div class="hero-stat">
+            <strong id="heroSignals">—</strong>
+            <span>signals observed</span>
+          </div>
+          <div class="hero-stat">
+            <strong id="heroPermissions">0</strong>
+            <span>permissions asked</span>
+          </div>
+          <div class="hero-stat">
+            <strong id="heroRequests">1</strong>
+            <span id="heroRequestsLabel">external request</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal reveal-delay-2" aria-label="Live exposure summary">
+        <div class="signal-orbit orbit-a" aria-hidden="true"></div>
+        <div class="signal-orbit orbit-b" aria-hidden="true"></div>
+        <div class="signal-orbit orbit-c" aria-hidden="true"></div>
+        <div class="radar-sweep" aria-hidden="true"></div>
+        <span class="hero-coord coord-a">31.0521° N</span>
+        <span class="hero-coord coord-b">76.5741° E</span>
+
+        <article class="hero-card">
+          <div class="hero-card-top">
+            <span class="mono-label">PASSIVE CAPTURE / LIVE</span>
+            <span class="chip chip-mint"><span class="live-dot"></span>OBSERVING</span>
+          </div>
+
+          <div class="hero-profile-head">
+            <div class="profile-glyph" aria-hidden="true">
+              <svg viewBox="0 0 72 72" fill="none">
+                <circle cx="36" cy="36" r="27" stroke="currentColor" stroke-opacity=".18"/>
+                <circle cx="36" cy="36" r="20" stroke="currentColor" stroke-opacity=".32" stroke-dasharray="3 4"/>
+                <circle cx="36" cy="36" r="11" stroke="currentColor" stroke-opacity=".7"/>
+                <circle cx="36" cy="36" r="4.5" fill="currentColor"/>
+                <path d="M36 4v8M36 60v8M4 36h8M60 36h8" stroke="currentColor" stroke-linecap="round"/>
+                <circle cx="54" cy="18" r="2.5" fill="var(--mint)"/>
+              </svg>
+            </div>
+            <div>
+              <span class="micro">OBSERVED IDENTITY</span>
+              <h2 class="hero-hash" id="heroFingerprint">Computing signature…</h2>
+              <p class="hero-browser" id="heroBrowser">Reading the browser surface…</p>
+            </div>
+          </div>
+
+          <div class="hero-score-block">
+            <div class="score-orb" id="heroRing" style="--score:0" aria-hidden="true">
+              <div class="score-orb-inner">
+                <strong id="heroScore">—</strong>
+                <span>/ 100</span>
+              </div>
+            </div>
+            <div class="hero-score-copy">
+              <span class="micro">EXPOSURE INDEX</span>
+              <strong id="heroScoreLabel">Mapping your surface</strong>
+              <p>A weighted reading of what was exposed — not a verdict on who you are.</p>
+            </div>
+          </div>
+
+          <div class="hero-findings" id="heroFindings">
+            <div class="hero-finding is-loading"><span class="finding-kicker">LOCATION</span><span class="finding-value" id="heroLocation">Awaiting IP lookup…</span><span class="finding-state">VISIBLE</span></div>
+            <div class="hero-finding"><span class="finding-kicker">NETWORK</span><span class="finding-value" id="heroIsp">Consulting the network…</span><span class="finding-state">VISIBLE</span></div>
+            <div class="hero-finding"><span class="finding-kicker">LOCAL TIME</span><span class="finding-value" id="heroTime">—:—</span><span class="finding-state finding-state-soft">INFERRED</span></div>
+          </div>
+
+          <div class="hero-card-foot">
+            <span><span class="tiny-dot"></span>HASH BUILT LOCALLY</span>
+            <code id="heroHash">SHA-256 / pending</code>
+          </div>
+        </article>
+
+        <div class="float-receipt float-receipt-a">
+          <span class="micro">NETWORK</span>
+          <strong id="heroNetworkType">Discovering…</strong>
+          <span class="float-note">SSID stays in the OS</span>
+        </div>
+        <div class="float-receipt float-receipt-b">
+          <span class="micro">DISPLAY</span>
+          <strong id="heroDisplay">— × —</strong>
+          <span class="float-note">viewport + pixel ratio</span>
+        </div>
+        <div class="hero-caption">
+          <span class="caption-line"></span>
+          <span>THE INSTRUMENT SEES BACK</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>NO PERMISSIONS REQUESTED</span><span class="ticker-sep">✦</span>
+        <span>ZERO COOKIES SET</span><span class="ticker-sep">✦</span>
+        <span>IP LOOKUP ONLY</span><span class="ticker-sep">✦</span>
+        <span>FINGERPRINT HASHED LOCALLY</span><span class="ticker-sep">✦</span>
+        <span>THE WEB KNOWS MORE THAN YOU THINK</span><span class="ticker-sep">✦</span>
+        <span>NO PERMISSIONS REQUESTED</span><span class="ticker-sep">✦</span>
+        <span>ZERO COOKIES SET</span><span class="ticker-sep">✦</span>
+        <span>IP LOOKUP ONLY</span><span class="ticker-sep">✦</span>
+        <span>FINGERPRINT HASHED LOCALLY</span><span class="ticker-sep">✦</span>
+        <span>THE WEB KNOWS MORE THAN YOU THINK</span><span class="ticker-sep">✦</span>
+      </div>
+    </div>
+
+    <!-- =====================================================
+         SCAN
+    ====================================================== -->
+    <section class="section scan-section" id="scan" aria-labelledby="scanTitle">
+      <div class="section-head reveal">
+        <div class="section-heading">
+          <div class="eyebrow"><span class="eyebrow-index">01</span><span class="eyebrow-rule"></span><span>THE SCAN</span></div>
+          <h2 id="scanTitle">It read you before<br>the page finished loading.</h2>
+          <p>Every value below came from a standard browser API. No dialogs were opened. No consent screen appeared. This is the passive layer — the part that arrives before trust.</p>
+        </div>
+        <div class="section-aside">
+          <span class="status-chip" id="scanBadge"><span class="live-dot"></span>SCANNING</span>
+          <button class="button button-small button-ghost" id="rescanBtn" type="button">
+            <svg class="icon" aria-hidden="true"><use href="#i-refresh"/></svg>
+            Rescan
+          </button>
+        </div>
+      </div>
+
+      <div class="scan-console reveal">
+        <div class="scan-toolbar">
+          <div class="scan-toolbar-state">
+            <span class="terminal-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="mono-label" id="scanStatusText">Opening passive channels…</span>
+            <span class="scan-timestamp" id="scanTimestamp">—</span>
+          </div>
+          <div class="scan-toolbar-actions">
+            <button class="tool-button" id="openLedger" type="button">
+              <svg class="icon" aria-hidden="true"><use href="#i-terminal"/></svg>
+              Raw ledger
+            </button>
+            <button class="tool-button" id="exportJson" type="button">
+              <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>
+              Export JSON
+            </button>
+          </div>
+        </div>
+
+        <div class="scan-overview">
+          <article class="panel score-panel">
+            <div class="panel-head">
+              <span class="mono-label">01 / EXPOSURE INDEX</span>
+              <span class="micro" id="scoreConfidence">PASSIVE ONLY</span>
+            </div>
+            <div class="score-stage">
+              <div class="score-dial" id="scoreDial" style="--score:0" role="img" aria-label="Exposure index pending">
+                <div class="score-dial-inner">
+                  <strong id="scoreValue">—</strong>
+                  <span>/ 100</span>
+                </div>
+                <span class="score-tick tick-0"></span>
+                <span class="score-tick tick-25"></span>
+                <span class="score-tick tick-50"></span>
+                <span class="score-tick tick-75"></span>
+                <span class="score-tick tick-100"></span>
+              </div>
+              <div class="score-verdict">
+                <span class="micro">CURRENT READ</span>
+                <strong id="scoreBand">Scanning the surface</strong>
+                <p id="scoreCopy">Counting the signals your browser hands over by default.</p>
+              </div>
+            </div>
+            <div class="category-bars" id="categoryBars" aria-label="Exposure by category"></div>
+            <div class="panel-foot">
+              <span>Signal availability, not risk.</span>
+              <button class="inline-link" id="openMethodScore" type="button">How it’s scored <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            </div>
+          </article>
+
+          <article class="panel identity-panel">
+            <div class="panel-head">
+              <span class="mono-label">02 / VISITOR MANIFEST</span>
+              <span class="chip chip-blue">LIVE</span>
+            </div>
+            <div class="manifest">
+              <div class="manifest-row">
+                <span>Device</span>
+                <strong id="manifestDevice">Reading…</strong>
+              </div>
+              <div class="manifest-row">
+                <span>Browser</span>
+                <strong id="manifestBrowser">Reading…</strong>
+              </div>
+              <div class="manifest-row">
+                <span>Platform</span>
+                <strong id="manifestPlatform">Reading…</strong>
+              </div>
+              <div class="manifest-row">
+                <span>Screen</span>
+                <strong id="manifestScreen">—</strong>
+              </div>
+              <div class="manifest-row">
+                <span>Graphics</span>
+                <strong id="manifestGpu">Reading…</strong>
+              </div>
+              <div class="manifest-row">
+                <span>Input</span>
+                <strong id="manifestTouch">Reading…</strong>
+              </div>
+            </div>
+            <div class="identity-footer">
+              <div class="identity-figure" aria-hidden="true">
+                <svg viewBox="0 0 82 44" fill="none">
+                  <path d="M8 22c7-10 18-15 33-15s26 5 33 15c-7 10-18 15-33 15S15 32 8 22Z" stroke="currentColor" stroke-opacity=".45"/>
+                  <circle cx="41" cy="22" r="9" stroke="currentColor" stroke-opacity=".75"/>
+                  <circle cx="41" cy="22" r="3" fill="var(--mint)"/>
+                  <path d="M2 22h6M74 22h6" stroke="currentColor" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <p>Enough signal to put you in a box. Not enough to know your name — yet.</p>
+            </div>
+          </article>
+
+          <article class="panel network-panel">
+            <div class="panel-head">
+              <span class="mono-label">03 / NETWORK RECEIPT</span>
+              <span class="micro" id="lookupProvider">IP LOOKUP PENDING</span>
+            </div>
+            <div class="map-wrap">
+              <img src="assets/img/world-map.svg" alt="" class="world-map">
+              <div class="map-dot" id="mapDot" aria-hidden="true"><span></span></div>
+              <span class="map-label" id="mapLabel">Locating…</span>
+              <span class="map-grid-label">APPROX. IP LOCATION</span>
+            </div>
+            <div class="receipt-list">
+              <div class="receipt-row"><span>IP address</span><strong id="receiptIp">—</strong></div>
+              <div class="receipt-row"><span>Approx. location</span><strong id="receiptLocation">—</strong></div>
+              <div class="receipt-row"><span>Provider / ASN</span><strong id="receiptIsp">—</strong></div>
+              <div class="receipt-row"><span>Time zone</span><strong id="receiptTz">—</strong></div>
+            </div>
+            <div class="panel-foot">
+              <span id="receiptTime">Request at —</span>
+              <button class="inline-link" id="openNetworkMethod" type="button">Inspect request <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            </div>
+          </article>
+        </div>
+
+        <div class="ledger-head">
+          <div>
+            <span class="mono-label">SIGNAL LEDGER</span>
+            <h3>What the page received</h3>
+          </div>
+          <div class="ledger-summary">
+            <span><strong id="signalCount">0</strong> values surfaced</span>
+            <span class="ledger-summary-sep"></span>
+            <span>0 permission prompts</span>
+          </div>
+        </div>
+        <div class="signal-grid" id="signalGrid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         THE DEVICE
+    ====================================================== -->
+    <section class="section edge-section" id="device" aria-labelledby="edgeTitle">
+      <div class="section-head reveal">
+        <div class="section-heading">
+          <div class="eyebrow"><span class="eyebrow-index">02</span><span class="eyebrow-rule"></span><span>THE EDGE</span></div>
+          <h2 id="edgeTitle">The machine behind the glass.</h2>
+          <p>Scroll through the object that made this page. We know its shape, its screen, its battery, sometimes its network. We do not know what is on it.</p>
+        </div>
+        <div class="section-aside section-aside-note">
+          <span class="section-note-number">03</span>
+          <span>Stages<br>to the edge</span>
+        </div>
+      </div>
+
+      <div class="edge-scroll" id="edgeScroll">
+        <div class="edge-pin" id="edgePin" data-stage="0">
+          <div class="edge-layout">
+            <div class="edge-copy">
+              <div class="edge-stage-line">
+                <span class="mono-label">STAGE <span id="edgeStageNum">01</span> / 03</span>
+                <span class="edge-stage-rule"></span>
+                <span class="mono-label" id="edgeStageTag">SURFACE</span>
+              </div>
+              <h3 class="edge-step-title" id="edgeStepTitle">The whole object.</h3>
+              <p class="edge-step-copy" id="edgeStepCopy">One request. A shape appears: your operating system, browser engine, screen geometry, and an approximate place on the map.</p>
+              <dl class="edge-readout" id="edgeReadout">
+                <div><dt>Form</dt><dd id="edgeForm">Reading…</dd></div>
+                <div><dt>OS</dt><dd id="edgeOs">Reading…</dd></div>
+                <div><dt>Browser</dt><dd id="edgeBrowser">Reading…</dd></div>
+              </dl>
+              <div class="edge-controls" role="group" aria-label="Device reveal stages">
+                <button class="edge-step is-active" data-edge-step="0" type="button" aria-pressed="true"><span>01</span>Surface</button>
+                <button class="edge-step" data-edge-step="1" type="button" aria-pressed="false"><span>02</span>System bar</button>
+                <button class="edge-step" data-edge-step="2" type="button" aria-pressed="false"><span>03</span>The edge</button>
+              </div>
+              <button class="text-link edge-skip" id="skipZoom" type="button">Skip the zoom <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            </div>
+
+            <div class="edge-visual" aria-label="Stylised device reconstruction based on browser signals">
+              <div class="edge-halo" aria-hidden="true"></div>
+              <div class="device-viewport">
+                <div class="device-frame" id="deviceFrame" data-form="desktop" data-os="windows">
+                  <div class="desktop-screen">
+                    <div class="wallpaper" aria-hidden="true">
+                      <svg viewBox="0 0 900 560" preserveAspectRatio="xMidYMid slice">
+                        <defs>
+                          <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0" stop-color="#071326"/>
+                            <stop offset=".55" stop-color="#102c45"/>
+                            <stop offset="1" stop-color="#192b35"/>
+                          </linearGradient>
+                          <radialGradient id="sun" cx="62%" cy="44%" r="26%">
+                            <stop offset="0" stop-color="#6cf5d0" stop-opacity=".54"/>
+                            <stop offset=".45" stop-color="#3f88a8" stop-opacity=".18"/>
+                            <stop offset="1" stop-color="#081523" stop-opacity="0"/>
+                          </radialGradient>
+                          <linearGradient id="ridgeA" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0" stop-color="#1a4351" stop-opacity=".95"/>
+                            <stop offset="1" stop-color="#0a1b2a" stop-opacity=".92"/>
+                          </linearGradient>
+                          <linearGradient id="ridgeB" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0" stop-color="#112b3c"/>
+                            <stop offset="1" stop-color="#07131f"/>
+                          </linearGradient>
+                        </defs>
+                        <rect width="900" height="560" fill="url(#sky)"/>
+                        <rect width="900" height="560" fill="url(#sun)"/>
+                        <g fill="none" stroke="#7ee7d0" stroke-opacity=".1">
+                          <path d="M0 430c110-90 210-75 300-118 112-53 181-95 284-89 112 7 196 73 316 54"/>
+                          <path d="M0 470c96-73 218-62 330-107 118-47 171-81 273-66 115 16 190 73 297 63"/>
+                          <path d="M0 510c106-56 201-49 312-86 127-42 178-51 279-34 109 19 197 52 309 31"/>
+                        </g>
+                        <path d="M0 410c96-61 173-57 252-94 87-40 137-84 230-91 97-8 172 36 245 73 61 30 110 44 173 41v221H0Z" fill="url(#ridgeA)"/>
+                        <path d="M0 470c87-35 163-29 253-56 97-29 167-68 257-59 93 10 160 54 233 67 60 11 111 4 157-16v154H0Z" fill="url(#ridgeB)"/>
+                        <g fill="#9ff7e4" opacity=".65">
+                          <circle cx="628" cy="198" r="2"/>
+                          <circle cx="674" cy="255" r="1.4"/>
+                          <circle cx="736" cy="152" r="1.2"/>
+                          <circle cx="545" cy="132" r="1"/>
+                          <circle cx="715" cy="333" r="1.3"/>
+                        </g>
+                      </svg>
+                    </div>
+
+                    <div class="desktop-menubar">
+                      <div class="menubar-left"><span class="menu-mark" aria-hidden="true"></span><strong>whattheysee</strong><span>File</span><span>View</span><span>Signal</span></div>
+                      <div class="menubar-right">
+                        <span class="menubar-network"><svg class="icon" aria-hidden="true"><use href="#i-wifi"/></svg><span id="edgeNetworkDesktop">network</span></span>
+                        <span class="menubar-battery"><span class="mini-battery"><i id="edgeBatteryFillDesktop"></i></span><span id="edgeBatteryDesktop">—</span></span>
+                        <span id="edgeClockDesktop">—:—</span>
+                      </div>
+                    </div>
+
+                    <div class="desktop-icons">
+                      <div class="desktop-icon"><span class="desk-icon icon-browser"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c2.1 2.1 3.2 4.9 3.2 8s-1.1 5.9-3.2 8"/></svg></span><span>Browser</span></div>
+                      <div class="desktop-icon"><span class="desk-icon icon-folder"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7h7l2 2h9v10H3V7Z"/></svg></span><span>Files</span></div>
+                      <div class="desktop-icon"><span class="desk-icon icon-notes"><svg viewBox="0 0 24 24" fill="none"><path d="M6 3h12v18H6zM9 8h6M9 12h6M9 16h4"/></svg></span><span>Notes</span></div>
+                    </div>
+
+                    <div class="desk-window" aria-hidden="true">
+                      <div class="window-bar"><span class="window-dots"><i></i><i></i><i></i></span><span>whattheysee / your scan</span><span class="window-lock"><svg viewBox="0 0 24 24" fill="none"><rect x="6" y="10" width="12" height="9" rx="2"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></svg></span></div>
+                      <div class="window-body">
+                        <div class="window-kicker">EXPOSURE / LIVE</div>
+                        <div class="window-score"><strong id="edgeWindowScore">—</strong><span>/100</span></div>
+                        <div class="window-bars"><i></i><i></i><i></i><i></i><i></i></div>
+                        <div class="window-copy">Your browser is speaking.<br><span>Here is what it said.</span></div>
+                      </div>
+                    </div>
+
+                    <div class="desktop-taskbar">
+                      <div class="taskbar-start" aria-hidden="true"><span class="start-glyph"><i></i><i></i><i></i><i></i></span></div>
+                      <div class="taskbar-search" aria-hidden="true"><svg class="icon"><use href="#i-search"/></svg><span>Search</span></div>
+                      <div class="taskbar-apps" aria-hidden="true">
+                        <span class="task-app icon-browser"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8"/><path d="M4 12h16"/></svg></span>
+                        <span class="task-app icon-folder"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7h7l2 2h9v10H3V7Z"/></svg></span>
+                        <span class="task-app icon-terminal"><svg viewBox="0 0 24 24" fill="none"><path d="m6 8 4 4-4 4M12 16h5"/></svg></span>
+                      </div>
+                      <div class="taskbar-tray">
+                        <span class="tray-network"><svg class="icon" aria-hidden="true"><use href="#i-wifi"/></svg><span id="edgeNetworkTaskbar">Wi-Fi</span></span>
+                        <span class="tray-battery"><span class="mini-battery"><i id="edgeBatteryFillTaskbar"></i></span><span id="edgeBatteryTaskbar">—</span></span>
+                        <span class="tray-time" id="edgeClockTaskbar">—:—</span>
+                      </div>
+                    </div>
+
+                    <div class="mac-dock" aria-hidden="true">
+                      <span class="dock-app icon-browser"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8"/><path d="M4 12h16"/></svg></span>
+                      <span class="dock-app icon-folder"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7h7l2 2h9v10H3V7Z"/></svg></span>
+                      <span class="dock-app icon-notes"><svg viewBox="0 0 24 24" fill="none"><path d="M6 3h12v18H6z"/></svg></span>
+                      <span class="dock-sep"></span>
+                      <span class="dock-app trash"><svg viewBox="0 0 24 24" fill="none"><path d="M5 7h14M9 7V4h6v3M7 7l1 14h8l1-14"/></svg></span>
+                    </div>
+                  </div>
+
+                  <div class="mobile-screen">
+                    <div class="mobile-wallpaper" aria-hidden="true">
+                      <svg viewBox="0 0 380 760" preserveAspectRatio="xMidYMid slice">
+                        <defs>
+                          <linearGradient id="phoneSky" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0" stop-color="#071326"/>
+                            <stop offset=".55" stop-color="#123248"/>
+                            <stop offset="1" stop-color="#182d37"/>
+                          </linearGradient>
+                          <radialGradient id="phoneGlow" cx="55%" cy="38%" r="48%">
+                            <stop offset="0" stop-color="#69f5d5" stop-opacity=".48"/>
+                            <stop offset="1" stop-color="#081322" stop-opacity="0"/>
+                          </radialGradient>
+                        </defs>
+                        <rect width="380" height="760" fill="url(#phoneSky)"/>
+                        <rect width="380" height="760" fill="url(#phoneGlow)"/>
+                        <g fill="none" stroke="#9cf8e7" stroke-opacity=".12">
+                          <path d="M-30 310c95-35 130-92 205-100 70-7 128 33 230 12"/>
+                          <path d="M-30 348c82-30 150-80 221-77 82 4 118 48 204 34"/>
+                          <path d="M-30 392c100-33 145-67 222-56 75 11 104 49 210 25"/>
+                          <path d="M-30 438c85-23 138-53 220-39 81 14 111 44 213 16"/>
+                        </g>
+                        <path d="M0 580c71-68 113-93 176-118 81-32 139-4 204 53v245H0Z" fill="#0b1d2c" opacity=".8"/>
+                      </svg>
+                    </div>
+                    <div class="mobile-statusbar">
+                      <span id="edgeClockMobile">—:—</span>
+                      <span class="dynamic-island" aria-hidden="true"></span>
+                      <span class="mobile-status-right"><svg class="icon" aria-hidden="true"><use href="#i-wifi"/></svg><span class="mini-battery"><i id="edgeBatteryFillMobile"></i></span></span>
+                    </div>
+                    <div class="mobile-lock">
+                      <span class="lock-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+                      <div class="mobile-date" id="edgeDateMobile">—</div>
+                      <div class="mobile-time" id="edgeBigTimeMobile">—:—</div>
+                      <div class="mobile-widget"><span>EXPOSURE</span><strong id="edgeWindowScoreMobile">—</strong><em>/ 100</em></div>
+                    </div>
+                    <div class="mobile-apps" aria-hidden="true">
+                      <span class="mobile-app app-one"><svg viewBox="0 0 24 24" fill="none"><path d="M5 5h14v14H5zM9 9h6M9 13h4"/></svg></span>
+                      <span class="mobile-app app-two"><svg viewBox="0 0 24 24" fill="none"><path d="M4 17 10 8l4 6 2-3 4 6H4Z"/></svg></span>
+                      <span class="mobile-app app-three"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7"/><path d="M12 5v7l4 3"/></svg></span>
+                      <span class="mobile-app app-four"><svg viewBox="0 0 24 24" fill="none"><path d="M5 6h14v12H5zM8 10h8M8 13h5"/></svg></span>
+                    </div>
+                    <span class="home-indicator" aria-hidden="true"></span>
+                  </div>
+                  <span class="phone-notch" aria-hidden="true"></span>
+                </div>
+
+                <div class="edge-callout callout-os" data-edge-callout="0">
+                  <span class="callout-kicker">READABLE</span>
+                  <strong id="edgeCalloutOs">Operating system</strong>
+                  <span>from the user agent</span>
+                </div>
+                <div class="edge-callout callout-screen" data-edge-callout="0">
+                  <span class="callout-kicker">READABLE</span>
+                  <strong id="edgeCalloutScreen">Screen geometry</strong>
+                  <span>not the pixels on it</span>
+                </div>
+                <div class="edge-callout callout-network" data-edge-callout="1">
+                  <span class="callout-kicker">PARTLY READABLE</span>
+                  <strong id="edgeCalloutNetwork">Network class</strong>
+                  <span>SSID stays hidden</span>
+                </div>
+                <div class="edge-callout callout-battery" data-edge-callout="1">
+                  <span class="callout-kicker">CHROMIUM ONLY</span>
+                  <strong id="edgeCalloutBattery">Battery —</strong>
+                  <span>with charging state</span>
+                </div>
+                <div class="edge-callout callout-hidden callout-hidden-a" data-edge-callout="2">
+                  <span class="lock-icon" aria-hidden="true"><svg class="icon"><use href="#i-lock"/></svg></span>
+                  <strong>Wi-Fi name</strong>
+                  <span>Never exposed to a website</span>
+                </div>
+                <div class="edge-callout callout-hidden callout-hidden-b" data-edge-callout="2">
+                  <span class="lock-icon" aria-hidden="true"><svg class="icon"><use href="#i-lock"/></svg></span>
+                  <strong>Installed apps</strong>
+                  <span>Not on the web platform</span>
+                </div>
+                <div class="edge-callout callout-hidden callout-hidden-c" data-edge-callout="2">
+                  <span class="lock-icon" aria-hidden="true"><svg class="icon"><use href="#i-lock"/></svg></span>
+                  <strong>Desktop wallpaper</strong>
+                  <span>Our reconstruction, not yours</span>
+                </div>
+              </div>
+              <div class="edge-fallback-note">Reconstruction, not a screenshot. The geometry is inferred; the interface is illustrative.</div>
+            </div>
+          </div>
+          <div class="edge-progress" aria-hidden="true"><span id="edgeProgressBar"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         PERMISSION LINE
+    ====================================================== -->
+    <section class="section permission-section" id="permissions" aria-labelledby="permissionTitle">
+      <div class="section-head reveal">
+        <div class="section-heading">
+          <div class="eyebrow"><span class="eyebrow-index">03</span><span class="eyebrow-rule"></span><span>THE PERMISSION LINE</span></div>
+          <h2 id="permissionTitle">The line between<br>reading and asking.</h2>
+          <p>Most people imagine a permission prompt protects them. In reality, a great deal of the browser is open by default. The line is drawn around your device — not around your attention.</p>
+        </div>
+        <div class="section-aside permission-meter">
+          <span class="permission-meter-value">0</span>
+          <span class="permission-meter-label">permission<br>prompts triggered</span>
+        </div>
+      </div>
+
+      <div class="permission-grid reveal">
+        <article class="permission-column is-open">
+          <div class="permission-head">
+            <span class="permission-icon"><svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg></span>
+            <div><span class="micro">DEFAULT SURFACE</span><h3>Visible without asking</h3></div>
+            <span class="permission-count">08+</span>
+          </div>
+          <p class="permission-intro">A site does not need your consent to read most browser and network metadata. It is already part of the request.</p>
+          <ul class="permission-list">
+            <li><span class="permission-dot dot-mint"></span><div><strong>Approximate location</strong><span>From your IP address — city-level, not GPS.</span></div><em>VISIBLE</em></li>
+            <li><span class="permission-dot dot-mint"></span><div><strong>Device + operating system</strong><span>User agent, hints, platform and touch support.</span></div><em>VISIBLE</em></li>
+            <li><span class="permission-dot dot-mint"></span><div><strong>Screen geometry</strong><span>Resolution, viewport, pixel ratio and colour depth.</span></div><em>VISIBLE</em></li>
+            <li><span class="permission-dot dot-mint"></span><div><strong>Language + local time</strong><span>Your locale and time zone can be read instantly.</span></div><em>VISIBLE</em></li>
+            <li><span class="permission-dot dot-mint"></span><div><strong>Graphics + hardware</strong><span>GPU renderer, CPU cores and estimated memory.</span></div><em>VISIBLE</em></li>
+            <li><span class="permission-dot dot-mint"></span><div><strong>Fonts + canvas output</strong><span>The raw material of a browser fingerprint.</span></div><em>VISIBLE</em></li>
+            <li><span class="permission-dot dot-amber"></span><div><strong>Battery level</strong><span>Where the Battery Status API exists, often Chromium.</span></div><em>PARTLY</em></li>
+            <li><span class="permission-dot dot-amber"></span><div><strong>Network class</strong><span>Type and estimated speed; availability varies by browser.</span></div><em>PARTLY</em></li>
+          </ul>
+        </article>
+
+        <article class="permission-column is-gated">
+          <div class="permission-head">
+            <span class="permission-icon"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg></span>
+            <div><span class="micro">BEHIND CONSENT</span><h3>Requires a prompt</h3></div>
+            <span class="permission-count">06</span>
+          </div>
+          <p class="permission-intro">These APIs are powerful for a reason. We did not call them, and you should be suspicious of any page that asks too quickly.</p>
+          <ul class="permission-list">
+            <li><span class="permission-dot dot-blue"></span><div><strong>Precise GPS location</strong><span>Your exact coordinates and movement.</span></div><em>NOT ASKED</em></li>
+            <li><span class="permission-dot dot-blue"></span><div><strong>Camera + microphone</strong><span>Live video and audio from your device.</span></div><em>NOT ASKED</em></li>
+            <li><span class="permission-dot dot-blue"></span><div><strong>Clipboard contents</strong><span>What you copied, if the API is granted.</span></div><em>NOT ASKED</em></li>
+            <li><span class="permission-dot dot-blue"></span><div><strong>Notifications</strong><span>Permission to interrupt you later.</span></div><em>NOT ASKED</em></li>
+            <li><span class="permission-dot dot-blue"></span><div><strong>Bluetooth + USB</strong><span>Nearby devices, when chosen manually.</span></div><em>NOT ASKED</em></li>
+            <li><span class="permission-dot dot-blue"></span><div><strong>Motion + orientation</strong><span>How the device is moving in space.</span></div><em>NOT ASKED</em></li>
+          </ul>
+        </article>
+
+        <article class="permission-column is-closed">
+          <div class="permission-head">
+            <span class="permission-icon"><svg class="icon" aria-hidden="true"><use href="#i-eye-off"/></svg></span>
+            <div><span class="micro">OUT OF REACH</span><h3>No website can see</h3></div>
+            <span class="permission-count">08</span>
+          </div>
+          <p class="permission-intro">A browser is a sandbox, not a window into the whole computer. Some things stay on your side of the line.</p>
+          <ul class="permission-list">
+            <li><span class="permission-dot dot-rose"></span><div><strong>Your Wi-Fi network name</strong><span>SSID and carrier are not in the web platform.</span></div><em>HIDDEN</em></li>
+            <li><span class="permission-dot dot-rose"></span><div><strong>Installed applications</strong><span>No website can list what is on your machine.</span></div><em>HIDDEN</em></li>
+            <li><span class="permission-dot dot-rose"></span><div><strong>Files outside storage</strong><span>No path browsing without a user gesture.</span></div><em>HIDDEN</em></li>
+            <li><span class="permission-dot dot-rose"></span><div><strong>Other tabs + history</strong><span>Cross-origin isolation prevents the view.</span></div><em>HIDDEN</em></li>
+            <li><span class="permission-dot dot-rose"></span><div><strong>Notification count</strong><span>The queue is owned by the operating system.</span></div><em>HIDDEN</em></li>
+            <li><span class="permission-dot dot-rose"></span><div><strong>Your name + email</strong><span>Unless you are signed in and choose to share.</span></div><em>HIDDEN</em></li>
+            <li><span class="permission-dot dot-rose"></span><div><strong>Desktop wallpaper</strong><span>Not readable; the device above is a reconstruction.</span></div><em>HIDDEN</em></li>
+            <li><span class="permission-dot dot-rose"></span><div><strong>Nearby smart devices</strong><span>No passive discovery from this page.</span></div><em>HIDDEN</em></li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="permission-oath reveal">
+        <span class="oath-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="currentColor" stroke-opacity=".3"/><path d="M12 20.5 17.5 26 28 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div>
+          <span class="micro">THE OATH</span>
+          <p>This page never asked for your location, camera, microphone, clipboard, notifications, Bluetooth or motion. <strong>Zero prompts. Zero stored scan data.</strong></p>
+        </div>
+        <button class="inline-link" id="openMethodOath" type="button">Read the method <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         FINGERPRINT
+    ====================================================== -->
+    <section class="section fingerprint-section" id="fingerprint" aria-labelledby="fingerprintTitle">
+      <div class="section-head reveal">
+        <div class="section-heading">
+          <div class="eyebrow"><span class="eyebrow-index">04</span><span class="eyebrow-rule"></span><span>THE FINGERPRINT</span></div>
+          <h2 id="fingerprintTitle">A name you cannot<br>spell correctly.</h2>
+          <p>Cookies can be cleared. A fingerprint is assembled from the small, ordinary details that make your browser render the world a certain way. It is not a legal identity. It is a stable-enough silhouette.</p>
+        </div>
+        <div class="section-aside section-aside-note">
+          <span class="section-note-number">SHA</span>
+          <span>256<br>local hash</span>
+        </div>
+      </div>
+
+      <div class="fingerprint-layout reveal">
+        <article class="hash-panel">
+          <div class="hash-panel-top">
+            <span class="mono-label">SESSION SIGNATURE / LOCAL</span>
+            <span class="chip chip-mint" id="hashStatusChip"><span class="live-dot"></span>BUILDING</span>
+          </div>
+          <h3>Your current silhouette</h3>
+          <p>This hash is computed in this tab from the values below. It never leaves your browser, and we keep no copy.</p>
+          <div class="hash-display">
+            <code id="fingerprintHash">Computing SHA-256 signature…</code>
+            <button class="copy-button" id="copyHash" type="button" aria-label="Copy fingerprint hash" disabled>
+              <svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>
+              <span>Copy</span>
+            </button>
+          </div>
+          <div class="hash-meta-grid">
+            <div><span>Replay check</span><strong id="hashReplay">Running…</strong></div>
+            <div><span>Hash algorithm</span><strong>SHA-256</strong></div>
+            <div><span>Entropy source</span><strong>Local values only</strong></div>
+            <div><span>Sent to server</span><strong class="text-mint">Never</strong></div>
+          </div>
+          <div class="hash-foot">
+            <svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>
+            <p><strong>This is not a unique ID.</strong> Many people share the same components. It becomes identifying when a network sees it repeatedly and ties it to other data.</p>
+          </div>
+        </article>
+
+        <div class="fingerprint-components">
+          <div class="fp-component-head">
+            <span class="mono-label">COMPONENT READOUT</span>
+            <span class="micro" id="fingerprintComponentCount">— OF 6 OBSERVED</span>
+          </div>
+          <div id="fingerprintComponents"></div>
+        </div>
+      </div>
+
+      <div class="signature-flow reveal">
+        <div class="flow-step">
+          <span class="flow-number">01</span>
+          <div class="flow-icon"><svg class="icon" aria-hidden="true"><use href="#i-fingerprint"/></svg></div>
+          <h3>Observe</h3>
+          <p>Canvas, GPU, fonts and display values combine into a repeatable hash. No permission is needed for this.</p>
+        </div>
+        <div class="flow-arrow" aria-hidden="true"><span></span></div>
+        <div class="flow-step">
+          <span class="flow-number">02</span>
+          <div class="flow-icon"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg></div>
+          <h3>Match</h3>
+          <p>If the same silhouette appears on another page — or another day — a network can begin to connect the visits.</p>
+        </div>
+        <div class="flow-arrow" aria-hidden="true"><span></span></div>
+        <div class="flow-step">
+          <span class="flow-number">03</span>
+          <div class="flow-icon"><svg class="icon" aria-hidden="true"><use href="#i-network"/></svg></div>
+          <h3>Accumulate</h3>
+          <p>IP, time zone, language and behaviour add context. The silhouette becomes a profile — approximate, persistent, and rarely seen by you.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         DOSSIER
+    ====================================================== -->
+    <section class="section dossier-section" id="dossier" aria-labelledby="dossierTitle">
+      <div class="section-head reveal">
+        <div class="section-heading">
+          <div class="eyebrow"><span class="eyebrow-index">05</span><span class="eyebrow-rule"></span><span>THE DOSSIER</span></div>
+          <h2 id="dossierTitle">The profile they<br>can assemble.</h2>
+          <p>Not your name. Not your intentions. But a working sketch of where you are, what you use, and when you arrived — written in a language your browser volunteered.</p>
+        </div>
+        <div class="section-aside section-aside-note">
+          <span class="section-note-number">FILE</span>
+          <span>assembled<br>on arrival</span>
+        </div>
+      </div>
+
+      <div class="dossier-layout reveal">
+        <div class="dossier-statement">
+          <div class="dossier-quote-mark" aria-hidden="true">“</div>
+          <blockquote>None of this needed<br>my permission.<br><span>That is the point.</span></blockquote>
+          <div class="dossier-statement-foot">
+            <span class="line"></span>
+            <p>The web is not a page you visit. It is a series of introductions you did not know you were making.</p>
+          </div>
+          <div class="dossier-assumption-list">
+            <div class="assumption">
+              <span class="assumption-index">A1</span>
+              <p><strong>They may assume you are at home.</strong> Your IP locates a network, not a person. You could be on a train, a café, or a VPN exit.</p>
+            </div>
+            <div class="assumption">
+              <span class="assumption-index">A2</span>
+              <p><strong>They may assume you are alone.</strong> A browser profile can be shared, borrowed, or run inside a virtual machine.</p>
+            </div>
+            <div class="assumption">
+              <span class="assumption-index">A3</span>
+              <p><strong>They may assume you are interested.</strong> Without an account or cookies from this site, there is no interest graph here — only a silhouette.</p>
+            </div>
+          </div>
+        </div>
+
+        <article class="dossier-sheet">
+          <div class="dossier-sheet-head">
+            <div><span class="mono-label">SUBJECT FILE / PASSIVE</span><h3>Unidentified visitor</h3></div>
+            <span class="stamp">OBSERVED</span>
+          </div>
+          <div class="dossier-fileline"><span>FILE NO.</span><code id="dossierFileNo">WTS-000000</code><span class="fileline-rule"></span><span id="dossierTimestamp">—</span></div>
+          <p class="dossier-narrative" id="dossierNarrative">Assembling the record from the browser’s own introduction…</p>
+          <div class="dossier-facts">
+            <div><span>Device</span><strong id="dossierDevice">—</strong></div>
+            <div><span>Location</span><strong id="dossierLocation">—</strong></div>
+            <div><span>Local time</span><strong id="dossierTime">—</strong></div>
+            <div><span>Network</span><strong id="dossierNetwork">—</strong></div>
+            <div><span>Screen</span><strong id="dossierScreen">—</strong></div>
+            <div><span>Signature</span><strong id="dossierSignature">—</strong></div>
+          </div>
+          <div class="dossier-redactions">
+            <span class="mono-label">REDACTED / NOT AVAILABLE</span>
+            <div class="redaction-row"><span class="redaction-bar"></span><span class="redaction-bar short"></span><em>Name</em></div>
+            <div class="redaction-row"><span class="redaction-bar"></span><span class="redaction-bar short"></span><em>Email</em></div>
+            <div class="redaction-row"><span class="redaction-bar"></span><span class="redaction-bar tiny"></span><em>Precise location</em></div>
+          </div>
+          <div class="dossier-sheet-foot">
+            <svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>
+            <p>Generated locally. No account, cookie, or server-side profile was used. Data brokers may know more because they see you across sites; this page sees one visit.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         FIX
+    ====================================================== -->
+    <section class="section fix-section" id="fix" aria-labelledby="fixTitle">
+      <div class="section-head reveal">
+        <div class="section-heading">
+          <div class="eyebrow"><span class="eyebrow-index">06</span><span class="eyebrow-rule"></span><span>THE FIX</span></div>
+          <h2 id="fixTitle">Exposure is not<br>a destiny.</h2>
+          <p>You cannot disappear from the web. You can make the silhouette blurrier, the network less specific, and the trail less durable. Start with the moves that change the most.</p>
+        </div>
+        <div class="section-aside fix-score-aside">
+          <div class="fix-score-mini">
+            <span class="micro">YOUR SCORE</span>
+            <strong id="currentScore">—</strong>
+          </div>
+          <svg class="fix-score-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15M14 7l5 5-5 5"/></svg>
+          <div class="fix-score-mini is-projected">
+            <span class="micro">PROJECTED</span>
+            <strong id="projectedScore">—</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="fix-layout reveal">
+        <div class="fix-controls">
+          <div class="fix-progress-card">
+            <div class="fix-progress-top">
+              <span class="mono-label">LOCKDOWN PROGRESS</span>
+              <strong><span id="fixProgressCount">0</span> / <span id="fixTotal">6</span></strong>
+            </div>
+            <div class="progress-track"><span id="fixProgressBar"></span></div>
+            <p id="fixProgressText">Tick a fix to see the projected drop. Nothing is uploaded.</p>
+            <button class="text-link" id="fixReset" type="button"><svg class="icon" aria-hidden="true"><use href="#i-trash"/></svg> Reset checklist</button>
+          </div>
+          <div class="fix-note">
+            <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+            <div><span class="micro">A NOTE ON NUMBERS</span><p>The projected score is a model, not a guarantee. Each fix removes one signal or makes correlation harder. Some will depend on your browser and network.</p></div>
+          </div>
+          <div class="browser-guide">
+            <span class="mono-label">QUICK REFERENCE</span>
+            <div class="browser-guide-row"><span>Firefox</span><p>Strict Enhanced Tracking Protection; resist fingerprinting.</p></div>
+            <div class="browser-guide-row"><span>Safari</span><p>Advanced Tracking and Fingerprinting Protection; Private Relay.</p></div>
+            <div class="browser-guide-row"><span>Brave</span><p>Shields up; aggressive fingerprint randomisation.</p></div>
+            <div class="browser-guide-row"><span>Chrome</span><p>Third-party cookie limits; review site permissions manually.</p></div>
+          </div>
+        </div>
+
+        <div class="fix-list" id="fixList"></div>
+      </div>
+
+      <div class="fix-cta reveal">
+        <div>
+          <span class="mono-label">AFTER THE CHECKLIST</span>
+          <h3>Run the scan again. See what changed.</h3>
+        </div>
+        <a class="button button-primary" href="#scan">Return to the scan <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         EVIDENCE
+    ====================================================== -->
+    <section class="section evidence-section" id="evidence" aria-labelledby="evidenceTitle">
+      <div class="section-head reveal">
+        <div class="section-heading">
+          <div class="eyebrow"><span class="eyebrow-index">07</span><span class="eyebrow-rule"></span><span>THE EVIDENCE</span></div>
+          <h2 id="evidenceTitle">The receipts<br>behind the mirror.</h2>
+          <p>This page is a demonstration, not a research paper. Its claims are deliberately narrow: these APIs exist, they expose what they expose, and the combination matters. Read the primary sources.</p>
+        </div>
+        <div class="section-aside section-aside-note">
+          <span class="section-note-number">07</span>
+          <span>claims<br>+ sources</span>
+        </div>
+      </div>
+
+      <div class="evidence-grid reveal">
+        <article class="evidence-card evidence-wide">
+          <div class="evidence-top"><span class="evidence-index">E.01</span><span class="chip chip-blue">NETWORK</span></div>
+          <h3>The first request is the loudest.</h3>
+          <p>To deliver a page, a server sees the connecting IP. An IP lookup adds approximate city, region, country, ISP and ASN. That is network-level information, not GPS — but it is enough to narrow the crowd before a single script runs.</p>
+          <div class="evidence-source"><span>Source</span><a href="https://ipwho.is/" target="_blank" rel="noopener noreferrer">ipwho.is documentation <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></a></div>
+        </article>
+        <article class="evidence-card">
+          <div class="evidence-top"><span class="evidence-index">E.02</span><span class="chip chip-mint">FINGERPRINT</span></div>
+          <h3>No permission is required to render.</h3>
+          <p>Canvas, WebGL and installed font probing work inside the normal page sandbox. The resulting differences can be stable enough to compare visits, which is why the technique is called fingerprinting.</p>
+          <div class="evidence-source"><span>Source</span><a href="https://coveryourtracks.eff.org/" target="_blank" rel="noopener noreferrer">EFF Cover Your Tracks <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></a></div>
+        </article>
+        <article class="evidence-card">
+          <div class="evidence-top"><span class="evidence-index">E.03</span><span class="chip chip-amber">BATTERY</span></div>
+          <h3>Battery was once an open book.</h3>
+          <p>The Battery Status API exposed level and charging state. Availability is limited and varies by browser and platform; this audit reports it only when the API answers, and marks it unavailable otherwise.</p>
+          <div class="evidence-source"><span>Source</span><a href="https://developer.mozilla.org/en-US/docs/Web/API/Battery_Status_API" target="_blank" rel="noopener noreferrer">MDN Battery Status API <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></a></div>
+        </article>
+        <article class="evidence-card">
+          <div class="evidence-top"><span class="evidence-index">E.04</span><span class="chip chip-blue">CONSENT</span></div>
+          <h3>Permission state is per origin.</h3>
+          <p>A granted camera permission here says nothing about another site. The Permissions API can reveal whether access is granted, denied or promptable — but not all features are queryable everywhere. This page queries status only, never access.</p>
+          <div class="evidence-source"><span>Source</span><a href="https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API" target="_blank" rel="noopener noreferrer">MDN Permissions API <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></a></div>
+        </article>
+        <article class="evidence-card">
+          <div class="evidence-top"><span class="evidence-index">E.05</span><span class="chip chip-violet">NETWORK INFO</span></div>
+          <h3>Network hints are optional.</h3>
+          <p>The Network Information API, where implemented, may expose effective connection type, estimated downlink and RTT. It does not reveal the Wi-Fi SSID, carrier account or router. Browser support is uneven, so the ledger treats absence as a result.</p>
+          <div class="evidence-source"><span>Source</span><a href="https://developer.mozilla.org/en-US/docs/Web/API/Network_Information_API" target="_blank" rel="noopener noreferrer">MDN Network Information API <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></a></div>
+        </article>
+        <article class="evidence-card evidence-wide">
+          <div class="evidence-top"><span class="evidence-index">E.06</span><span class="chip chip-violet">LIMITS</span></div>
+          <h3>A silhouette is not a name — until it is connected.</h3>
+          <p>Fingerprints are imperfect and can change after updates, zoom changes, new fonts or privacy tools. They become more identifying when a network sees them repeatedly, sets cookies, or joins them to a login. The honest conclusion is not “they know everything.” It is “they know enough to compare.”</p>
+          <div class="evidence-source"><span>Source</span><a href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator/userAgentData" target="_blank" rel="noopener noreferrer">MDN User-Agent Client Hints <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></a></div>
+        </article>
+      </div>
+
+      <div class="evidence-foot reveal">
+        <span class="mono-label">METHOD NOTE</span>
+        <p>All scan values are produced by your browser. Location is fetched once from an independent IP service. No analytics, advertising or server-side logging is part of this page.</p>
+        <button class="inline-link" id="openMethodEvidence" type="button">Read the full method <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <a class="footer-brand" href="#top" aria-label="WhatTheySee home">
+        <span class="footer-eye" aria-hidden="true">
+          <svg viewBox="0 0 64 40" fill="none"><path d="M4 20C11.4 9.8 21.5 5 32 5s20.6 4.8 28 15c-7.4 10.2-17.5 15-28 15S11.4 30.2 4 20Z" stroke="currentColor" stroke-width="1.4"/><circle cx="32" cy="20" r="8" stroke="currentColor" stroke-width="1.4"/><circle cx="32" cy="20" r="3" fill="currentColor"/></svg>
+        </span>
+        <span>WHATTHEYSEE</span>
+      </a>
+      <p class="footer-lede">A mirror for the metadata you cannot see. Built to be read, not to collect.</p>
+      <div class="footer-links">
+        <a href="#scan">The scan</a>
+        <a href="#device">The device</a>
+        <a href="#fingerprint">Fingerprint</a>
+        <a href="#fix">The fix</a>
+        <a href="#evidence">Evidence</a>
+        <button class="footer-link-button" id="openMethodFooter" type="button">Method</button>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="footerYear">2026</span> WHATTHEYSEE / PASSIVE LAB</span>
+      <span class="footer-status"><span class="live-dot"></span>STATIC SITE · NO SERVER · NO ACCOUNTS</span>
+      <span>SCAN DATA STAYS IN THIS TAB</span>
+    </div>
+  </footer>
+
+  <!-- =====================================================
+       RAW LEDGER DIALOG
+  ====================================================== -->
+  <dialog class="modal ledger-dialog" id="ledgerDialog" aria-labelledby="ledgerDialogTitle">
+    <div class="modal-shell">
+      <header class="modal-head">
+        <div>
+          <span class="mono-label">RAW SIGNAL LEDGER / LOCAL SNAPSHOT</span>
+          <h2 id="ledgerDialogTitle">Everything the page received.</h2>
+        </div>
+        <button class="icon-button modal-close" data-close-dialog type="button" aria-label="Close raw ledger">
+          <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+      </header>
+      <div class="ledger-tools">
+        <label class="search-field">
+          <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+          <input type="search" id="ledgerSearch" placeholder="Filter signals, values, sources…" autocomplete="off">
+        </label>
+        <span class="ledger-tools-count" id="ledgerResultCount">0 rows</span>
+      </div>
+      <div class="ledger-table-wrap">
+        <table class="ledger-table">
+          <thead><tr><th>Signal</th><th>Value</th><th>Source</th><th>Reach</th></tr></thead>
+          <tbody id="ledgerTableBody"></tbody>
+        </table>
+        <p class="ledger-empty" id="ledgerEmpty" hidden>No signals match that filter.</p>
+      </div>
+      <footer class="modal-foot">
+        <span class="modal-foot-note"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg> Generated in this tab. Closing this page discards it.</span>
+        <div class="modal-actions">
+          <button class="button button-small button-ghost" data-close-dialog type="button">Close</button>
+          <button class="button button-small button-primary" id="ledgerExportJson" type="button"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg> Export JSON</button>
+        </div>
+      </footer>
+    </div>
+  </dialog>
+
+  <!-- =====================================================
+       METHOD DIALOG
+  ====================================================== -->
+  <dialog class="modal method-dialog" id="methodDialog" aria-labelledby="methodTitle">
+    <div class="modal-shell">
+      <header class="modal-head">
+        <div>
+          <span class="mono-label">METHOD / PRIVACY RECEIPT</span>
+          <h2 id="methodTitle">How this mirror works.</h2>
+        </div>
+        <button class="icon-button modal-close" data-close-dialog type="button" aria-label="Close method">
+          <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+      </header>
+      <div class="method-body">
+        <section class="method-intro">
+          <span class="method-kicker">READ ME FIRST</span>
+          <p>WhatTheySee is a static page. It has no backend, no account system, no analytics and no way to receive your scan. Its only outbound traffic is an IP lookup — primary provider, plus a fallback only if the first fails — so it can show the approximate network location that any server would already see.</p>
+        </section>
+
+        <div class="method-grid">
+          <section class="method-block">
+            <span class="mono-label">WHAT WE DID</span>
+            <ul class="method-list">
+              <li><span class="method-num">01</span><div><strong>Read browser APIs</strong><p>Device, display, language, time, capabilities, permissions <em>status</em>, battery where available.</p></div></li>
+              <li><span class="method-num">02</span><div><strong>Made one IP lookup</strong><p>Sent a normal HTTPS request to an independent IP geolocation service. That service saw your IP, as any web server must.</p></div></li>
+              <li><span class="method-num">03</span><div><strong>Built a local signature</strong><p>Hashed selected values with SHA-256 inside this tab. The resulting hash was not transmitted.</p></div></li>
+            </ul>
+          </section>
+          <section class="method-block">
+            <span class="mono-label">WHAT WE NEVER DID</span>
+            <ul class="method-check-list">
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Request geolocation, camera, microphone or clipboard</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Set a tracking cookie or read third-party cookies</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Store your scan in localStorage or a database</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Load analytics, ads, CDN scripts, maps or remote fonts</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Send your fingerprint, screen or battery values anywhere</li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="request-receipt">
+          <div class="request-receipt-head">
+            <span class="mono-label">OUTBOUND REQUEST RECEIPT</span>
+            <span class="chip chip-amber">SHOWING THIS VISIT</span>
+          </div>
+          <div class="request-receipt-grid">
+            <div><span>Requests made</span><strong id="methodRequests">—</strong></div>
+            <div><span>Provider</span><strong id="methodProvider">—</strong></div>
+            <div><span>Purpose</span><strong>Approximate IP location</strong></div>
+            <div><span>Scan values sent</span><strong class="text-mint">None</strong></div>
+            <div><span>Signal count</span><strong id="methodSignals">—</strong></div>
+            <div><span>Scan finished</span><strong id="methodTime">—</strong></div>
+          </div>
+          <p class="request-receipt-note">If the primary lookup fails, the page may try a fallback provider. Both are listed in the network request log below. No IP address is displayed to a third party beyond the service that already receives it to fulfil the request.</p>
+        </section>
+
+        <section class="method-block method-score-block" id="methodScore">
+          <span class="mono-label">HOW THE INDEX IS BUILT</span>
+          <p class="method-prose">The exposure index is a weighted count of signal availability across eight groups — network, precision, device, display, context, fingerprint, battery and surface. The weights sum to 100; fingerprint carries the largest single weight because it is the most reusable comparison surface. This is not a measure of danger, and it is not benchmarked against other people. It answers one narrow question: how much of the page’s passive instrument had something to read? The fix projection is a deliberately simple model that subtracts a fixed weight for each completed action.</p>
+        </section>
+
+        <div class="method-grid method-grid-three">
+          <section class="method-block" id="methodAccuracy">
+            <span class="mono-label">ACCURACY</span>
+            <p class="method-prose">IP geolocation is approximate and can be wrong. User-agent strings can be spoofed. Signatures change. Battery and network APIs vary by browser. Treat every value as a clue, not a fact.</p>
+          </section>
+          <section class="method-block" id="methodPrivacy">
+            <span class="mono-label">STORAGE</span>
+            <p class="method-prose">Theme preference and the fix checklist may be saved in <code>localStorage</code> so they survive reloads. Scan values are held in memory only and disappear when the tab closes.</p>
+          </section>
+          <section class="method-block">
+            <span class="mono-label">PROVIDERS</span>
+            <p class="method-prose">IP lookup: <a href="https://ipwho.is/" target="_blank" rel="noopener noreferrer">ipwho.is</a> primary; <a href="https://ipapi.co/" target="_blank" rel="noopener noreferrer">ipapi.co</a> fallback, attempted only if the primary fails. Basemap: Natural Earth (public domain). Sources are linked in the evidence section. Self-hosted fonts; no remote assets.</p>
+          </section>
+        </div>
+
+        <section class="request-log">
+          <span class="mono-label">NETWORK LOG / THIS PAGE</span>
+          <div id="methodRequestLog" class="request-log-list"></div>
+        </section>
+
+        <section class="method-closing">
+          <p><strong>The point is not fear.</strong> The point is that your browser is a communicator. It tells a coherent story to everyone who asks. You can choose a shorter story — but first you have to see the one you are telling.</p>
+          <button class="button button-small button-primary" data-close-dialog type="button">Back to the mirror <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </section>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <div class="noscript-banner">This mirror is built with JavaScript because the browser's passive signals are only visible through the browser. Nothing is sent to a server or stored. Enable JavaScript to see your scan.</div>
+  </noscript>
+
+  <script src="js/data.js" defer></script>
+  <script src="js/collectors.js" defer></script>
+  <script src="js/fingerprint.js" defer></script>
+  <script src="js/score.js" defer></script>
+  <script src="js/app.js" defer></script>
+</body>
+</html>
