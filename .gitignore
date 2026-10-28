@@ -1,0 +1,11 @@
+# Local tooling and OS noise
+node_modules/
+.netlify/
+.wrangler/
+.DS_Store
+Thumbs.db
+*.log
+
+# Local screenshots and downloads from tools/shot.mjs
+screenshots/
+*.crdownload
