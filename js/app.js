@@ -242,7 +242,7 @@
     const total = snapshot.signals.length;
 
     if (els.heroStatus) els.heroStatus.classList.add("is-complete");
-    if (els.heroStatusText) els.heroStatusText.textContent = "Scan complete · no prompts, no storage";
+    if (els.heroStatusText) els.heroStatusText.textContent = "Scan complete · no prompts, no scan stored";
     if (els.heroStatusMeta) els.heroStatusMeta.textContent = `${observed} SIGNALS`;
     if (els.scanBadge) els.scanBadge.innerHTML = '<span class="live-dot"></span>SCAN COMPLETE';
     if (els.scanStatusText) {
@@ -263,7 +263,7 @@
 
   function renderScanError(error) {
     if (els.heroStatusText) els.heroStatusText.textContent = "Passive scan interrupted";
-    if (els.heroStatusMeta) els.heroStatusMeta.textContent = "NO DATA STORED";
+    if (els.heroStatusMeta) els.heroStatusMeta.textContent = "NO SCAN STORED";
     if (els.scanBadge) els.scanBadge.innerHTML = '<span class="dot-rose"></span>SCAN INTERRUPTED';
     if (els.scanStatusText) els.scanStatusText.textContent = `Scan incomplete: ${error?.message || "unknown browser error"}`;
     if (els.exportJson) els.exportJson.disabled = true;
