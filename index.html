@@ -4,11 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark light">
-  <meta name="theme-color" content="#060b13">
+  <meta name="theme-color" content="#09090a">
   <meta name="description" content="WhatTheySee is a passive browser privacy audit. See the device, network and fingerprint signals every website can read — then close the gap. No permissions. No accounts. No scan data stored.">
   <meta property="og:title" content="WhatTheySee — You see a website. They see a signature.">
   <meta property="og:description" content="A passive exposure audit for your browser. See what a website can learn without asking, then lock it down.">
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="WhatTheySee">
+  <meta property="og:url" content="https://whattheysee.surge.sh/">
+  <link rel="canonical" href="https://whattheysee.surge.sh/">
   <title>WhatTheySee — The browser privacy mirror</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -115,122 +118,180 @@
           <span>PASSIVE BROWSER AUDIT</span>
           <span class="eyebrow-live"><span class="live-dot"></span>LIVE</span>
         </div>
-        <h1 id="heroTitle" class="hero-title">
-          <span class="hero-title-line"><span>You see a website.</span></span>
-          <span class="hero-title-line"><span class="hero-title-gradient">They see a signature.</span></span>
-        </h1>
-      </div>
 
-      <div class="hero-body">
-        <div class="hero-copy">
-          <p class="hero-lede reveal reveal-delay-2">Before the first click, your browser introduced itself. This page just listened. No permissions. No pop-ups. No login.</p>
+        <div class="hero-head-grid">
+          <h1 id="heroTitle" class="hero-title">
+            <span class="hero-title-line"><span>You see a website.</span></span>
+            <span class="hero-title-line"><span class="hero-title-gradient">They see a signature.</span></span>
+          </h1>
 
-          <div class="hero-actions reveal reveal-delay-3">
-            <a class="button button-primary" href="#scan">
-              Open my scan
-              <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
-            </a>
-            <a class="button button-ghost" href="#fix">
-              Close the gap
-              <span class="button-key">06</span>
-            </a>
-          </div>
-
-          <div class="hero-status reveal reveal-delay-4" id="heroStatus" role="status" aria-live="polite">
-            <span class="scan-pulse" aria-hidden="true"></span>
-            <span id="heroStatusText">Receiving passive signals…</span>
-            <span class="hero-status-count" id="heroStatusMeta">0 / 40</span>
-          </div>
-
-          <div class="hero-stats reveal reveal-delay-4" role="group" aria-label="Visit facts">
-            <div class="hero-stat">
-              <strong id="heroSignals">—</strong>
-              <span>signals observed</span>
-            </div>
-            <div class="hero-stat">
-              <strong id="heroPermissions">0</strong>
-              <span>permissions asked</span>
-            </div>
-            <div class="hero-stat">
-              <strong id="heroRequests">1</strong>
-              <span id="heroRequestsLabel">external request</span>
+          <div class="hero-intro">
+            <p class="hero-lede reveal reveal-delay-2">Your browser answered before you clicked. This page only listened, then traced every answer back to the device that gave it. No permissions. No pop-ups. No login.</p>
+            <div class="hero-actions reveal reveal-delay-3">
+              <a class="button button-primary" href="#scan">
+                Open my scan
+                <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+              </a>
+              <a class="button button-ghost" href="#fix">
+                Close the gap
+                <span class="button-key">06</span>
+              </a>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="hero-visual reveal reveal-delay-2" role="group" aria-label="Live exposure summary">
-          <div class="hero-aura" aria-hidden="true"></div>
-          <div class="hero-spotlight" aria-hidden="true"></div>
-          <div class="signal-orbit orbit-a" aria-hidden="true"></div>
-          <div class="signal-orbit orbit-b" aria-hidden="true"></div>
-          <div class="signal-orbit orbit-c" aria-hidden="true"></div>
-          <div class="radar-sweep" aria-hidden="true"></div>
-          <span class="hero-coord coord-a" id="heroCoordA">—° N</span>
-          <span class="hero-coord coord-b" id="heroCoordB">—° E</span>
-
-          <article class="hero-card">
-            <div class="hero-card-top">
-              <span class="mono-label">PASSIVE CAPTURE / LIVE</span>
-              <span class="chip chip-mint"><span class="live-dot"></span>OBSERVING</span>
+      <div class="hero-body reveal reveal-delay-2">
+        <div class="bench" id="heroBench">
+          <div class="bench-bar">
+            <div class="bench-id">
+              <span class="bench-live" aria-hidden="true"><span class="live-dot"></span></span>
+              <span class="bench-title">DEVICE BENCH</span>
             </div>
-
-            <div class="hero-profile-head">
-              <div class="profile-glyph" aria-hidden="true">
-                <svg viewBox="0 0 72 72" fill="none">
-                  <circle cx="36" cy="36" r="27" stroke="currentColor" stroke-opacity=".18"/>
-                  <circle cx="36" cy="36" r="20" stroke="currentColor" stroke-opacity=".32" stroke-dasharray="3 4"/>
-                  <circle cx="36" cy="36" r="11" stroke="currentColor" stroke-opacity=".7"/>
-                  <circle cx="36" cy="36" r="4.5" fill="currentColor"/>
-                  <path d="M36 4v8M36 60v8M4 36h8M60 36h8" stroke="currentColor" stroke-linecap="round"/>
-                  <circle cx="54" cy="18" r="2.5" fill="var(--mint)"/>
-                </svg>
-              </div>
-              <div>
-                <span class="micro">OBSERVED IDENTITY</span>
-                <h2 class="hero-hash" id="heroFingerprint">Computing signature…</h2>
-                <p class="hero-browser" id="heroBrowser">Reading the browser surface…</p>
-              </div>
+            <div class="bench-facts" role="group" aria-label="Visit facts">
+              <span class="bench-fact"><strong id="heroSignals">—</strong><span>signals</span></span>
+              <span class="bench-fact"><strong id="heroPermissions">0</strong><span>permissions</span></span>
+              <span class="bench-fact"><strong id="heroRequests">1</strong><span id="heroRequestsLabel">external request</span></span>
+              <span class="bench-fact"><strong id="heroTime">—:—</strong><span>local time</span></span>
             </div>
+          </div>
 
-            <div class="hero-score-block">
-              <div class="score-orb" id="heroRing" style="--score:0" aria-hidden="true">
-                <div class="score-orb-inner">
-                  <strong id="heroScore">—</strong>
-                  <span>/ 100</span>
+          <div class="bench-stage" id="heroStage" aria-label="Your laptop and phone, connected by signal wires to a local collector">
+            <div class="bench-spot" aria-hidden="true"></div>
+            <svg class="bench-wires" id="heroWires" preserveAspectRatio="none" aria-hidden="true"></svg>
+
+            <div class="bench-center">
+              <div class="bench-scene" id="heroScene">
+                <div class="bench-tilt" id="heroTilt">
+                  <div class="scene-top">
+                    <div class="scene-callout callout-request" data-callout="request" aria-hidden="true">
+                      <span class="callout-index">01</span>
+                      <div class="callout-body">
+                        <span class="callout-kicker">REQUEST LAYER</span>
+                        <strong id="heroCalloutRequest">Chrome · Windows</strong>
+                        <span class="callout-note">Headers read</span>
+                      </div>
+                    </div>
+
+                    <div class="bench-core">
+                      <span class="core-hub"><i aria-hidden="true"></i>LOCAL COLLECTOR<i aria-hidden="true"></i></span>
+                      <div class="core-dial" id="heroRing" style="--score: 0">
+                        <svg class="core-dial-svg" viewBox="0 0 120 120" aria-hidden="true">
+                          <circle class="dial-track" cx="60" cy="60" r="53" pathLength="100"/>
+                          <circle class="dial-ticks" cx="60" cy="60" r="59" pathLength="100"/>
+                          <circle class="dial-value" cx="60" cy="60" r="53" pathLength="100"/>
+                        </svg>
+                        <div class="core-center">
+                          <span class="core-kicker">EXPOSURE</span>
+                          <strong id="heroScore">—</strong>
+                          <span class="core-band" id="heroScoreLabel">Mapping</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="scene-callout callout-hash" data-callout="hash" aria-hidden="true">
+                      <span class="callout-index">02</span>
+                      <div class="callout-body">
+                        <span class="callout-kicker">RENDER SURFACE</span>
+                        <strong id="heroCalloutHash">Pending</strong>
+                        <span class="callout-note">Hashed in this tab</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bench-devices" aria-hidden="true">
+                    <div class="device device-laptop" data-device="laptop">
+                      <div class="laptop-lid">
+                        <div class="laptop-screen">
+                          <div class="laptop-chrome">
+                            <span class="chrome-dots"><i></i><i></i><i></i></span>
+                            <span class="chrome-url">whattheysee.local</span>
+                            <span class="chrome-live">LIVE</span>
+                          </div>
+                          <div class="laptop-page">
+                            <div class="laptop-page-copy">
+                              <span class="laptop-kicker">WHATTHEYSEE / LIVE</span>
+                              <strong>You see<br>a website.</strong>
+                              <span class="laptop-sub">They see a signature.</span>
+                              <span class="laptop-cursor"></span>
+                            </div>
+                            <div class="laptop-panel">
+                              <span class="laptop-panel-kicker">THEY SEE</span>
+                              <div class="laptop-panel-score">
+                                <strong id="heroLaptopScore">—</strong>
+                                <span>EXPOSURE</span>
+                              </div>
+                              <div class="laptop-panel-row"><span>SIGNATURE</span><code id="heroLaptopHash">pending</code></div>
+                              <div class="laptop-panel-row"><span>NETWORK</span><b id="heroLaptopNetwork">Reading</b></div>
+                              <div class="laptop-panel-row"><span>LOCATION</span><b id="heroLaptopLocation">Locating</b></div>
+                              <div class="laptop-panel-bars" aria-hidden="true">
+                                <i style="--bar: 34%"></i>
+                                <i style="--bar: 62%"></i>
+                                <i style="--bar: 48%"></i>
+                                <i style="--bar: 86%"></i>
+                                <i style="--bar: 56%"></i>
+                                <i style="--bar: 72%"></i>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <span class="laptop-camera"></span>
+                      </div>
+                      <div class="laptop-base"><span class="laptop-keys"></span></div>
+                      <span class="device-label">THIS DEVICE / YOUR VIEW</span>
+                    </div>
+
+                    <div class="device device-phone" data-device="phone">
+                      <div class="phone-shell">
+                        <span class="phone-notch"></span>
+                        <div class="phone-screen">
+                          <div class="phone-status">
+                            <span id="heroPhoneTime">—:—</span>
+                            <span class="phone-status-icons"><i></i><i></i><i></i></span>
+                          </div>
+                          <div class="phone-content">
+                            <span class="phone-kicker">THEY SEE</span>
+                            <strong class="phone-place" id="heroPhoneLocation">Locating…</strong>
+                            <span class="phone-network" id="heroPhoneNetwork">Network…</span>
+                            <div class="phone-map" id="heroPhoneMap">
+                              <span class="phone-map-dot"></span>
+                            </div>
+                            <div class="phone-signature">
+                              <span class="phone-signature-kicker">SIGNATURE</span>
+                              <code id="heroPhoneHash">pending</code>
+                            </div>
+                            <div class="phone-row"><span>OS</span><b id="heroPhoneOs">Reading</b></div>
+                            <div class="phone-row"><span>WEB</span><b id="heroPhoneBrowser">Reading</b></div>
+                          </div>
+                          <span class="phone-home"></span>
+                        </div>
+                      </div>
+                      <span class="device-label">THEIR VIEW</span>
+                    </div>
+                  </div>
+
+                  <div class="scene-trace" id="heroTrace">
+                    <div class="trace-head">
+                      <span class="trace-dot" aria-hidden="true"></span>
+                      <span class="trace-label">LIVE TRACE</span>
+                      <span class="trace-time" id="heroTraceTime">—:—:—</span>
+                    </div>
+                    <p class="trace-text" id="heroTraceText">Reading the request layer…</p>
+                  </div>
+
+                  <svg class="scene-leaders" id="heroLeaders" preserveAspectRatio="none" aria-hidden="true"></svg>
                 </div>
               </div>
-              <div class="hero-score-copy">
-                <span class="micro">EXPOSURE INDEX</span>
-                <strong id="heroScoreLabel">Mapping your surface</strong>
-                <p>A weighted reading of what was exposed — not a verdict on who you are.</p>
-              </div>
             </div>
 
-            <div class="hero-findings" id="heroFindings">
-              <div class="hero-finding is-loading"><span class="finding-kicker">LOCATION</span><span class="finding-value" id="heroLocation">Awaiting IP lookup…</span><span class="finding-state">VISIBLE</span></div>
-              <div class="hero-finding"><span class="finding-kicker">NETWORK</span><span class="finding-value" id="heroIsp">Consulting the network…</span><span class="finding-state">VISIBLE</span></div>
-              <div class="hero-finding"><span class="finding-kicker">LOCAL TIME</span><span class="finding-value" id="heroTime">—:—</span><span class="finding-state finding-state-soft">INFERRED</span></div>
-            </div>
-
-            <div class="hero-card-foot">
-              <span><span class="tiny-dot"></span>HASH BUILT LOCALLY</span>
-              <code id="heroHash">SHA-256 / pending</code>
-            </div>
-          </article>
-
-          <div class="float-receipt float-receipt-a">
-            <span class="micro">NETWORK</span>
-            <strong id="heroNetworkType">Discovering…</strong>
-            <span class="float-note">SSID stays in the OS</span>
           </div>
-          <div class="float-receipt float-receipt-b">
-            <span class="micro">DISPLAY</span>
-            <strong id="heroDisplay">— × —</strong>
-            <span class="float-note">viewport + pixel ratio</span>
-          </div>
-          <div class="hero-caption">
-            <span class="caption-line"></span>
-            <span>THE INSTRUMENT SEES BACK</span>
+
+          <div class="bench-foot">
+            <div class="hero-status" id="heroStatus" role="status" aria-live="polite">
+              <span class="scan-pulse" aria-hidden="true"></span>
+              <span id="heroStatusText">Receiving passive signals…</span>
+              <span class="hero-status-count" id="heroStatusMeta">0 / 40</span>
+            </div>
           </div>
         </div>
       </div>
@@ -255,6 +316,88 @@
         <span>THE WEB KNOWS MORE THAN YOU THINK</span><span class="ticker-sep">✦</span>
       </div>
     </div>
+
+    <!-- =====================================================
+         SIGNAL SHEET
+    ====================================================== -->
+    <section class="section sheet-section" id="signals" aria-labelledby="sheetTitle">
+      <div class="section-head reveal">
+        <div class="section-heading">
+          <div class="eyebrow"><span class="eyebrow-index">00</span><span class="eyebrow-rule"></span><span>THE SIGNAL SHEET</span></div>
+          <h2 id="sheetTitle">Six things the page<br>already knows.</h2>
+          <p>No prompt appeared. No permission was asked for. These values arrived through ordinary browser APIs — the passive layer that loads before trust. Each card names how the page got it, and how much to trust it.</p>
+        </div>
+        <div class="section-aside">
+          <div class="sheet-legend" aria-label="How to read the provenance labels">
+            <span class="legend-item"><i class="legend-dot dot-visible" aria-hidden="true"></i><b>VISIBLE</b> handed over</span>
+            <span class="legend-item"><i class="legend-dot dot-inferred" aria-hidden="true"></i><b>INFERRED</b> IP estimate</span>
+            <span class="legend-item"><i class="legend-dot dot-local" aria-hidden="true"></i><b>LOCAL</b> computed here</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="signal-sheet reveal reveal-delay-2">
+        <article class="sheet-card sheet-visible is-loading" data-wire="browser">
+          <div class="sheet-card-head">
+            <span class="sheet-index">01</span>
+            <span class="tag-state">VISIBLE</span>
+          </div>
+          <span class="sheet-kicker">BROWSER / OS</span>
+          <strong class="sheet-value" id="heroBrowser">Reading the request…</strong>
+          <span class="sheet-note">User-Agent + Client Hints</span>
+        </article>
+
+        <article class="sheet-card sheet-visible is-loading" data-wire="display">
+          <div class="sheet-card-head">
+            <span class="sheet-index">02</span>
+            <span class="tag-state">VISIBLE</span>
+          </div>
+          <span class="sheet-kicker">DISPLAY / INPUT</span>
+          <strong class="sheet-value" id="heroDisplay">— × —</strong>
+          <span class="sheet-note" id="heroInput">Screen geometry + pointer</span>
+        </article>
+
+        <article class="sheet-card sheet-visible is-loading" data-wire="graphics">
+          <div class="sheet-card-head">
+            <span class="sheet-index">03</span>
+            <span class="tag-state">VISIBLE</span>
+          </div>
+          <span class="sheet-kicker">GRAPHICS</span>
+          <strong class="sheet-value" id="heroGpu">Reading the renderer…</strong>
+          <span class="sheet-note">WebGL renderer string</span>
+        </article>
+
+        <article class="sheet-card sheet-inferred is-loading" data-wire="network">
+          <div class="sheet-card-head">
+            <span class="sheet-index">04</span>
+            <span class="tag-state">INFERRED</span>
+          </div>
+          <span class="sheet-kicker">NETWORK</span>
+          <strong class="sheet-value" id="heroNetworkType">Discovering…</strong>
+          <span class="sheet-note">IP registry · SSID stays hidden</span>
+        </article>
+
+        <article class="sheet-card sheet-inferred is-loading" data-wire="location">
+          <div class="sheet-card-head">
+            <span class="sheet-index">05</span>
+            <span class="tag-state">INFERRED</span>
+          </div>
+          <span class="sheet-kicker">LOCATION</span>
+          <strong class="sheet-value" id="heroLocation">Awaiting IP lookup…</strong>
+          <span class="sheet-note" id="heroCoords">Approximate coordinates</span>
+        </article>
+
+        <article class="sheet-card sheet-local is-loading" data-wire="signature">
+          <div class="sheet-card-head">
+            <span class="sheet-index">06</span>
+            <span class="tag-state">LOCAL</span>
+          </div>
+          <span class="sheet-kicker">SIGNATURE</span>
+          <strong class="sheet-value" id="heroFingerprint">Computing signature…</strong>
+          <span class="sheet-note">Canvas · WebGL · audio · fonts</span>
+        </article>
+      </div>
+    </section>
 
     <!-- =====================================================
          SCAN
@@ -457,34 +600,34 @@
                       <svg viewBox="0 0 900 560" preserveAspectRatio="xMidYMid slice">
                         <defs>
                           <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0" stop-color="#071326"/>
-                            <stop offset=".55" stop-color="#102c45"/>
-                            <stop offset="1" stop-color="#192b35"/>
+                            <stop offset="0" stop-color="#121113"/>
+                            <stop offset=".55" stop-color="#1d1714"/>
+                            <stop offset="1" stop-color="#241b16"/>
                           </linearGradient>
                           <radialGradient id="sun" cx="62%" cy="44%" r="26%">
-                            <stop offset="0" stop-color="#6cf5d0" stop-opacity=".54"/>
-                            <stop offset=".45" stop-color="#3f88a8" stop-opacity=".18"/>
-                            <stop offset="1" stop-color="#081523" stop-opacity="0"/>
+                            <stop offset="0" stop-color="#ff7a5c" stop-opacity=".54"/>
+                            <stop offset=".45" stop-color="#b34a2a" stop-opacity=".18"/>
+                            <stop offset="1" stop-color="#0b0b0c" stop-opacity="0"/>
                           </radialGradient>
                           <linearGradient id="ridgeA" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0" stop-color="#1a4351" stop-opacity=".95"/>
-                            <stop offset="1" stop-color="#0a1b2a" stop-opacity=".92"/>
+                            <stop offset="0" stop-color="#3a2a22" stop-opacity=".95"/>
+                            <stop offset="1" stop-color="#141110" stop-opacity=".92"/>
                           </linearGradient>
                           <linearGradient id="ridgeB" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0" stop-color="#112b3c"/>
-                            <stop offset="1" stop-color="#07131f"/>
+                            <stop offset="0" stop-color="#241a16"/>
+                            <stop offset="1" stop-color="#0b0b0c"/>
                           </linearGradient>
                         </defs>
                         <rect width="900" height="560" fill="url(#sky)"/>
                         <rect width="900" height="560" fill="url(#sun)"/>
-                        <g fill="none" stroke="#7ee7d0" stroke-opacity=".1">
+                        <g fill="none" stroke="#ff9b7a" stroke-opacity=".1">
                           <path d="M0 430c110-90 210-75 300-118 112-53 181-95 284-89 112 7 196 73 316 54"/>
                           <path d="M0 470c96-73 218-62 330-107 118-47 171-81 273-66 115 16 190 73 297 63"/>
                           <path d="M0 510c106-56 201-49 312-86 127-42 178-51 279-34 109 19 197 52 309 31"/>
                         </g>
                         <path d="M0 410c96-61 173-57 252-94 87-40 137-84 230-91 97-8 172 36 245 73 61 30 110 44 173 41v221H0Z" fill="url(#ridgeA)"/>
                         <path d="M0 470c87-35 163-29 253-56 97-29 167-68 257-59 93 10 160 54 233 67 60 11 111 4 157-16v154H0Z" fill="url(#ridgeB)"/>
-                        <g fill="#9ff7e4" opacity=".65">
+                        <g fill="#ffd9c9" opacity=".65">
                           <circle cx="628" cy="198" r="2"/>
                           <circle cx="674" cy="255" r="1.4"/>
                           <circle cx="736" cy="152" r="1.2"/>
@@ -548,24 +691,24 @@
                       <svg viewBox="0 0 380 760" preserveAspectRatio="xMidYMid slice">
                         <defs>
                           <linearGradient id="phoneSky" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0" stop-color="#071326"/>
-                            <stop offset=".55" stop-color="#123248"/>
-                            <stop offset="1" stop-color="#182d37"/>
+                            <stop offset="0" stop-color="#121113"/>
+                            <stop offset=".55" stop-color="#1d1714"/>
+                            <stop offset="1" stop-color="#241b16"/>
                           </linearGradient>
                           <radialGradient id="phoneGlow" cx="55%" cy="38%" r="48%">
-                            <stop offset="0" stop-color="#69f5d5" stop-opacity=".48"/>
-                            <stop offset="1" stop-color="#081322" stop-opacity="0"/>
+                            <stop offset="0" stop-color="#ff7a5c" stop-opacity=".48"/>
+                            <stop offset="1" stop-color="#0b0b0c" stop-opacity="0"/>
                           </radialGradient>
                         </defs>
                         <rect width="380" height="760" fill="url(#phoneSky)"/>
                         <rect width="380" height="760" fill="url(#phoneGlow)"/>
-                        <g fill="none" stroke="#9cf8e7" stroke-opacity=".12">
+                        <g fill="none" stroke="#ff9b7a" stroke-opacity=".12">
                           <path d="M-30 310c95-35 130-92 205-100 70-7 128 33 230 12"/>
                           <path d="M-30 348c82-30 150-80 221-77 82 4 118 48 204 34"/>
                           <path d="M-30 392c100-33 145-67 222-56 75 11 104 49 210 25"/>
                           <path d="M-30 438c85-23 138-53 220-39 81 14 111 44 213 16"/>
                         </g>
-                        <path d="M0 580c71-68 113-93 176-118 81-32 139-4 204 53v245H0Z" fill="#0b1d2c" opacity=".8"/>
+                        <path d="M0 580c71-68 113-93 176-118 81-32 139-4 204 53v245H0Z" fill="#241a16" opacity=".8"/>
                       </svg>
                     </div>
                     <div class="mobile-statusbar">
@@ -996,7 +1139,9 @@
       <div class="footer-links">
         <a href="#scan">The scan</a>
         <a href="#device">The device</a>
+        <a href="#permissions">Permissions</a>
         <a href="#fingerprint">Fingerprint</a>
+        <a href="#dossier">Dossier</a>
         <a href="#fix">The fix</a>
         <a href="#evidence">Evidence</a>
         <button class="footer-link-button" id="openMethodFooter" type="button">Method</button>

@@ -19,6 +19,7 @@
     checkedFixes: new Set(),
     edgeStage: 0,
     toastTimer: null,
+    heroTraceIdle: "Reading the request layer…",
     theme: document.documentElement.getAttribute("data-theme") || "dark"
   };
 
@@ -194,7 +195,13 @@
       if (els.heroStatus) els.heroStatus.classList.remove("is-complete");
       if (els.heroStatusText) els.heroStatusText.textContent = isRescan ? "Re-reading the browser surface…" : "Receiving passive signals…";
       if (els.heroStatusMeta) els.heroStatusMeta.textContent = "PASSIVE / LIVE";
+      state.heroTraceIdle = isRescan ? "Re-reading the browser surface…" : "Receiving passive signals…";
+      if (els.heroTraceText) els.heroTraceText.textContent = state.heroTraceIdle;
       if (els.heroPermissions) els.heroPermissions.textContent = "0";
+      if (els.heroBench) {
+        els.heroBench.classList.add("is-scanning");
+        els.heroBench.classList.remove("is-live");
+      }
       if (els.exportJson) els.exportJson.disabled = true;
       if (els.ledgerExportJson) els.ledgerExportJson.disabled = true;
     }
@@ -204,6 +211,8 @@
     if (!state.scanning) return;
     if (els.scanStatusText) els.scanStatusText.textContent = `${label}…`;
     if (els.heroStatusText) els.heroStatusText.textContent = `${label}…`;
+    state.heroTraceIdle = `${label}…`;
+    if (els.heroTraceText) els.heroTraceText.textContent = state.heroTraceIdle;
   }
 
   async function runScan(options) {
@@ -244,6 +253,15 @@
     if (els.heroStatus) els.heroStatus.classList.add("is-complete");
     if (els.heroStatusText) els.heroStatusText.textContent = "Scan complete · no prompts, no scan stored";
     if (els.heroStatusMeta) els.heroStatusMeta.textContent = `${observed} SIGNALS`;
+    const canHover = window.matchMedia ? window.matchMedia("(hover: hover) and (pointer: fine)").matches : true;
+    const canTap = (navigator.maxTouchPoints || 0) > 0
+      || (window.matchMedia ? window.matchMedia("(any-pointer: coarse)").matches : false);
+    state.heroTraceIdle = canHover && canTap
+      ? `Trace complete · hover or tap a device or callout.`
+      : canHover
+        ? `Trace complete · hover a device or callout.`
+        : `Trace complete · tap a device.`;
+    if (els.heroTraceText) els.heroTraceText.textContent = state.heroTraceIdle;
     if (els.scanBadge) els.scanBadge.innerHTML = '<span class="live-dot"></span>SCAN COMPLETE';
     if (els.scanStatusText) {
       els.scanStatusText.textContent = `Scan complete · ${observed} signals surfaced · ${formatDuration(snapshot.durationMs)}`;
@@ -264,6 +282,8 @@
   function renderScanError(error) {
     if (els.heroStatusText) els.heroStatusText.textContent = "Passive scan interrupted";
     if (els.heroStatusMeta) els.heroStatusMeta.textContent = "NO SCAN STORED";
+    state.heroTraceIdle = "Trace interrupted · nothing left this tab.";
+    if (els.heroTraceText) els.heroTraceText.textContent = state.heroTraceIdle;
     if (els.scanBadge) els.scanBadge.innerHTML = '<span class="dot-rose"></span>SCAN INTERRUPTED';
     if (els.scanStatusText) els.scanStatusText.textContent = `Scan incomplete: ${error?.message || "unknown browser error"}`;
     if (els.exportJson) els.exportJson.disabled = true;
@@ -285,6 +305,7 @@
     updateLiveClocks();
     if (els.scoreValue) animateNumber(els.scoreValue, score.score, 900);
     if (els.heroScore) animateNumber(els.heroScore, score.score, 900);
+    if (els.heroLaptopScore) animateNumber(els.heroLaptopScore, score.score, 900);
     animateDial(els.scoreDial, score.score);
     animateDial(els.heroRing, score.score);
     if (els.scoreDial) els.scoreDial.setAttribute("aria-label", `Exposure index ${score.score} out of 100: ${score.band.label.toLowerCase()}`);
@@ -298,50 +319,97 @@
 
   function renderHero(snapshot, score) {
     const hash = snapshot.fingerprint.hash || "";
+    const shortHash = hash ? hash.slice(0, 10).toUpperCase() : "";
+    const network = snapshot.network || {};
+    const display = snapshot.display || {};
+    const device = snapshot.device || {};
+    const observed = snapshot.signals.filter((signal) => signal.observed).length;
+
     if (els.heroFingerprint) {
-      els.heroFingerprint.textContent = hash ? `${hash.slice(0, 10).toUpperCase()}` : "No signature";
+      els.heroFingerprint.textContent = shortHash || "No signature";
       els.heroFingerprint.title = hash || "No fingerprint hash available";
     }
     if (els.heroBrowser) {
-      els.heroBrowser.textContent = `${snapshot.device.osLabel} / ${snapshot.device.browserLabel}`;
+      els.heroBrowser.textContent = `${device.browserLabel || "Unknown browser"} / ${device.osLabel || "Unknown OS"}`;
     }
     if (els.heroScoreLabel) els.heroScoreLabel.textContent = score.band.label;
     if (els.heroLocation) {
-      const location = [snapshot.network.city, snapshot.network.country].filter(Boolean).join(", ");
+      const location = [network.city, network.country].filter(Boolean).join(", ");
       els.heroLocation.textContent = location || "IP location unavailable";
     }
-    if (els.heroIsp) els.heroIsp.textContent = snapshot.networkDisplay || "Network hidden";
-    if (els.heroTime) els.heroTime.textContent = formatLiveTime();
+    if (els.heroCoords) {
+      const latitude = formatCoordinate(network.latitude, "N", "S");
+      const longitude = formatCoordinate(network.longitude, "E", "W");
+      els.heroCoords.textContent = latitude && longitude
+        ? `${latitude} / ${longitude}`
+        : "Coordinates unavailable";
+    }
     if (els.heroNetworkType) {
-      els.heroNetworkType.textContent = snapshot.networkDisplay || (snapshot.network.online ? "Network type hidden" : "Offline");
-      els.heroNetworkType.title = `${snapshot.typeDisplay}${snapshot.providerDisplay ? ` · ${snapshot.providerDisplay}` : ""} · SSID hidden`;
-    }
-    if (els.heroCoordA) {
-      const latitude = formatCoordinate(snapshot.network.latitude, "N", "S");
-      els.heroCoordA.textContent = latitude || "—° N";
-      els.heroCoordA.hidden = !latitude;
-      if (latitude) els.heroCoordA.title = "Approximate IP latitude — not GPS";
-    }
-    if (els.heroCoordB) {
-      const longitude = formatCoordinate(snapshot.network.longitude, "E", "W");
-      els.heroCoordB.textContent = longitude || "—° E";
-      els.heroCoordB.hidden = !longitude;
-      if (longitude) els.heroCoordB.title = "Approximate IP longitude — not GPS";
+      els.heroNetworkType.textContent = snapshot.networkDisplay || (network.online ? "Network type hidden" : "Offline");
+      els.heroNetworkType.title = `${snapshot.typeDisplay || "Connection hidden"}${snapshot.providerDisplay ? ` · ${snapshot.providerDisplay}` : ""} · SSID stays in the OS`;
     }
     if (els.heroDisplay) {
-      els.heroDisplay.textContent = snapshot.display.screenWidth
-        ? `${snapshot.display.screenWidth} × ${snapshot.display.screenHeight}`
+      els.heroDisplay.textContent = display.screenWidth
+        ? `${display.screenWidth} × ${display.screenHeight}`
         : "Display hidden";
     }
-    if (els.heroHash) els.heroHash.textContent = hash ? `SHA-256 / ${hash.slice(0, 10).toUpperCase()}` : "SHA-256 / unavailable";
+    if (els.heroInput) {
+      const ratio = Number(display.devicePixelRatio || 1);
+      const dpr = Number.isFinite(ratio) ? ratio.toFixed(2).replace(/\.?0+$/, "") : "1";
+      const pointer = display.coarsePointer && !display.finePointer ? "touch" : display.finePointer ? "mouse" : "pointer hidden";
+      const touches = Number(display.maxTouchPoints) || 0;
+      els.heroInput.textContent = `${dpr}× DPR · ${pointer} · ${touches} touch point${touches === 1 ? "" : "s"}`;
+    }
+    if (els.heroGpu) {
+      const gpu = display.webgl?.renderer || display.webgl?.vendor || "Not exposed";
+      els.heroGpu.textContent = gpu;
+      els.heroGpu.title = gpu;
+    }
+    if (els.heroHash) els.heroHash.textContent = hash ? `SHA-256 / ${shortHash}` : "SHA-256 / unavailable";
     if (els.heroPermissions) els.heroPermissions.textContent = "0";
     if (els.heroRequests) els.heroRequests.textContent = String(snapshot.requestCount);
     if (els.heroRequestsLabel) {
       els.heroRequestsLabel.textContent = snapshot.requestCount === 1 ? "external request" : "external requests";
     }
-    if (els.heroSignals) els.heroSignals.textContent = String(snapshot.signals.filter((signal) => signal.observed).length);
-    if (els.heroFindings) {
-      $$(".hero-finding.is-loading", els.heroFindings).forEach((finding) => finding.classList.remove("is-loading"));
+    if (els.heroSignals) els.heroSignals.textContent = String(observed);
+    if (els.heroTime) els.heroTime.textContent = formatLiveTime();
+
+    if (els.heroPhoneLocation) {
+      els.heroPhoneLocation.textContent = network.city
+        ? `${network.city}${network.countryCode ? `, ${network.countryCode}` : ""}`
+        : "Location unavailable";
+    }
+    if (els.heroPhoneNetwork) els.heroPhoneNetwork.textContent = snapshot.networkDisplay || "Network hidden";
+    if (els.heroPhoneHash) els.heroPhoneHash.textContent = shortHash || "No hash";
+    if (els.heroPhoneOs) els.heroPhoneOs.textContent = device.osLabel || "Unknown";
+    if (els.heroPhoneBrowser) els.heroPhoneBrowser.textContent = device.browserLabel || "Unknown";
+    if (els.heroPhoneMap && snapshot.mapPosition) {
+      els.heroPhoneMap.style.setProperty("--map-x", `${snapshot.mapPosition.x}%`);
+      els.heroPhoneMap.style.setProperty("--map-y", `${snapshot.mapPosition.y}%`);
+    }
+
+    const compactLocation = network.city
+      ? `${network.city}${network.countryCode ? `, ${network.countryCode}` : ""}`
+      : "Location hidden";
+    if (els.heroCalloutRequest) {
+      els.heroCalloutRequest.textContent = `${device.browserLabel || "Unknown browser"} · ${device.osLabel || "Unknown OS"}`;
+    }
+    if (els.heroCalloutHash) els.heroCalloutHash.textContent = shortHash || "No signature";
+    if (els.heroCalloutNetwork) els.heroCalloutNetwork.textContent = snapshot.networkDisplay || "Network hidden";
+    if (els.heroLaptopScore) els.heroLaptopScore.textContent = String(score.score);
+    if (els.heroLaptopHash) els.heroLaptopHash.textContent = shortHash || "pending";
+    if (els.heroLaptopNetwork) els.heroLaptopNetwork.textContent = snapshot.typeDisplay || snapshot.networkDisplay || "Hidden";
+    if (els.heroLaptopLocation) els.heroLaptopLocation.textContent = compactLocation;
+
+    if (els.heroBench) {
+      els.heroBench.classList.add("is-live");
+      els.heroBench.classList.remove("is-scanning");
+    }
+    $$(".sheet-card.is-loading").forEach((card) => card.classList.remove("is-loading"));
+    if (els.heroStage) {
+      $$(".is-dimmed, .is-traced", els.heroStage).forEach((element) => {
+        element.classList.remove("is-dimmed", "is-traced");
+      });
     }
   }
 
@@ -726,6 +794,8 @@
     if (els.edgeBigTimeMobile) els.edgeBigTimeMobile.textContent = time;
     if (els.edgeDateMobile) els.edgeDateMobile.textContent = formatLiveDate();
     if (els.heroTime) els.heroTime.textContent = time;
+    if (els.heroPhoneTime) els.heroPhoneTime.textContent = time;
+    if (els.heroTraceTime) els.heroTraceTime.textContent = formatShortStamp();
   }
 
   function updateLiveClocks() {
@@ -1028,7 +1098,7 @@
     state.theme = next;
     document.documentElement.setAttribute("data-theme", next);
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", next === "light" ? "#f3f6fb" : "#060b13");
+    if (meta) meta.setAttribute("content", next === "light" ? "#f4f1ea" : "#09090a");
     if (els.themeToggle) {
       const label = next === "dark" ? "Switch to light mode" : "Switch to dark mode";
       els.themeToggle.setAttribute("aria-label", label);
@@ -1123,45 +1193,327 @@
     });
   }
 
-  function initHeroMotion() {
-    const visual = $(".hero-visual");
-    const card = $(".hero-card");
-    if (!visual || !card || reduceMotion) return;
+  function initHeroWires() {
+    const stage = $("#heroStage");
+    const svg = $("#heroWires");
+    const core = stage ? $(".core-dial", stage) : null;
+    if (!stage || !svg || !core) return;
+
+    const NS = "http://www.w3.org/2000/svg";
+    const links = [
+      { id: "laptop", state: "visible", kind: "device", delay: "0.2s" },
+      { id: "phone", state: "local", kind: "device", delay: "1.55s" }
+    ];
+
+    const nodes = links.map((link) => {
+      const base = document.createElementNS(NS, "path");
+      base.setAttribute("class", `wire wire-trunk wire-${link.state}`);
+      base.setAttribute("data-wire", link.id);
+      base.setAttribute("pathLength", "100");
+
+      const pulse = document.createElementNS(NS, "path");
+      pulse.setAttribute("class", `wire-pulse wire-${link.state}`);
+      pulse.setAttribute("data-wire", link.id);
+      pulse.setAttribute("pathLength", "100");
+      pulse.style.setProperty("--wire-delay", link.delay);
+
+      svg.append(base, pulse);
+      return { link, base, pulse };
+    });
+
+    const edgePoint = (from, center, rx, ry) => {
+      const dx = from.x - center.x;
+      const dy = from.y - center.y;
+      if (!dx && !dy) return center;
+      const angle = Math.atan2(dy / ry, dx / rx);
+      return {
+        x: center.x + Math.cos(angle) * rx,
+        y: center.y + Math.sin(angle) * ry
+      };
+    };
+
+    const deviceCurve = (start, end) => {
+      const direction = start.x < end.x ? 1 : -1;
+      const c1x = start.x + direction * 44;
+      const c1y = start.y - 34;
+      const c2x = end.x - direction * 34;
+      const c2y = end.y + 34;
+      return `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${end.x.toFixed(2)} ${end.y.toFixed(2)}`;
+    };
+
+    const draw = () => {
+      const stageRect = stage.getBoundingClientRect();
+      if (!stageRect.width || !stageRect.height) return;
+      svg.setAttribute("viewBox", `0 0 ${stageRect.width} ${stageRect.height}`);
+
+      const coreRect = core.getBoundingClientRect();
+      const center = {
+        x: coreRect.left - stageRect.left + coreRect.width / 2,
+        y: coreRect.top - stageRect.top + coreRect.height / 2
+      };
+      const rx = coreRect.width / 2 + 6;
+      const ry = coreRect.height / 2 + 6;
+
+      nodes.forEach(({ link, base, pulse }) => {
+        const device = $(`.device-${link.id}`, stage);
+        if (!device) return;
+        const rect = device.getBoundingClientRect();
+        const start = link.id === "laptop"
+          ? { x: rect.left - stageRect.left + 12, y: rect.top - stageRect.top + 4 }
+          : { x: rect.right - stageRect.left - 12, y: rect.top - stageRect.top + 4 };
+
+        const end = edgePoint(start, center, rx, ry);
+        const path = deviceCurve(start, end);
+        base.setAttribute("d", path);
+        pulse.setAttribute("d", path);
+      });
+    };
+
+    let frame = 0;
+    const schedule = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        draw();
+      });
+    };
+
+    if (typeof ResizeObserver === "function") {
+      const observer = new ResizeObserver(schedule);
+      observer.observe(stage);
+    }
+    window.addEventListener("resize", schedule, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule).catch(() => {});
+    draw();
+    return draw;
+  }
+
+  function initHeroLeaders() {
+    const tilt = $("#heroTilt");
+    const svg = $("#heroLeaders");
+    if (!tilt || !svg) return;
+
+    const NS = "http://www.w3.org/2000/svg";
+    const links = [
+      { id: "request", from: $(".callout-request", tilt), to: $(".laptop-chrome", tilt), startEdge: 0.12, endEdge: 0.08 },
+      { id: "hash", from: $(".callout-hash", tilt), to: $(".laptop-panel", tilt), startEdge: 0.88, endEdge: 0.92 }
+    ];
+
+    const nodes = links.map((link) => {
+      const path = document.createElementNS(NS, "path");
+      path.setAttribute("class", `leader leader-${link.id}`);
+      const dot = document.createElementNS(NS, "circle");
+      dot.setAttribute("class", `leader-dot leader-${link.id}`);
+      dot.setAttribute("r", "2.4");
+      svg.append(path, dot);
+      return { ...link, path, dot };
+    });
+
+    const offsetWithin = (element, root) => {
+      let x = 0;
+      let y = 0;
+      let node = element;
+      while (node && node !== root) {
+        x += node.offsetLeft;
+        y += node.offsetTop;
+        node = node.offsetParent;
+      }
+      return { x, y };
+    };
+
+    const draw = () => {
+      const width = tilt.offsetWidth;
+      const height = tilt.offsetHeight;
+      if (!width || !height) return;
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+
+      nodes.forEach(({ from, to, path, dot, startEdge, endEdge }) => {
+        if (!from || !to || !from.offsetWidth || !to.offsetWidth) {
+          path.setAttribute("d", "");
+          dot.setAttribute("opacity", "0");
+          return;
+        }
+
+        const fromBox = offsetWithin(from, tilt);
+        const toBox = offsetWithin(to, tilt);
+        const start = {
+          x: fromBox.x + from.offsetWidth * startEdge,
+          y: fromBox.y + from.offsetHeight
+        };
+        const end = {
+          x: toBox.x + to.offsetWidth * endEdge,
+          y: toBox.y + 2
+        };
+        const span = end.y - start.y;
+        const c1 = { x: start.x, y: start.y + span * 0.42 };
+        const c2 = { x: end.x, y: end.y - span * 0.26 };
+
+        path.setAttribute("d", `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} C ${c1.x.toFixed(2)} ${c1.y.toFixed(2)}, ${c2.x.toFixed(2)} ${c2.y.toFixed(2)}, ${end.x.toFixed(2)} ${end.y.toFixed(2)}`);
+        dot.setAttribute("cx", end.x.toFixed(2));
+        dot.setAttribute("cy", end.y.toFixed(2));
+        dot.setAttribute("opacity", "0.9");
+      });
+    };
+
+    if (typeof ResizeObserver === "function") {
+      const observer = new ResizeObserver(draw);
+      observer.observe(tilt);
+    }
+    window.addEventListener("resize", draw, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw).catch(() => {});
+    draw();
+    return draw;
+  }
+
+  function initHeroMotion(redrawWires) {
+    const stage = $("#heroStage");
+    const tilt = $("#heroTilt");
+    if (!stage) return;
+
+    const traceText = els.heroTraceText;
+    const idleTrace = () => state.heroTraceIdle || "Reading the request layer…";
+
+    const showTraceCopy = (id) => {
+      if (!traceText || state.scanning) return;
+      const snapshot = state.snapshot;
+      if (!snapshot) return;
+      const device = snapshot.device || {};
+      const display = snapshot.display || {};
+      const network = snapshot.network || {};
+      const hash = snapshot.fingerprint?.hash || "";
+      const shortHash = hash ? hash.slice(0, 10).toUpperCase() : "pending";
+      const location = [network.city, network.country].filter(Boolean).join(", ") || "location hidden";
+      const dpr = Number(display.devicePixelRatio || 1);
+      const copy = {
+        browser: `${device.browserLabel || "Unknown browser"} on ${device.osLabel || "Unknown OS"} · named in the request.`,
+        display: `${display.screenWidth || "—"} × ${display.screenHeight || "—"} at ${Number.isFinite(dpr) ? dpr.toFixed(2).replace(/\.?0+$/, "") : "1"}× DPR · geometry exposed.`,
+        graphics: `WebGL renderer: ${display.webgl?.renderer || "not exposed"}.`,
+        network: `${snapshot.networkDisplay || "Network hidden"} · inferred from the IP registry.`,
+        location: `${location} · approximate exit point, not GPS.`,
+        signature: `Local hash ${shortHash} · canvas, WebGL, audio, fonts.`,
+        request: `${device.browserLabel || "Unknown browser"} on ${device.osLabel || "Unknown OS"} · headers read passively.`,
+        hash: `Signature ${shortHash} · computed in this tab, never uploaded.`,
+        laptop: "This is your view. The browser still describes the surface behind it.",
+        phone: "The same request, redrawn as the view a server can infer."
+      };
+      if (copy[id]) traceText.textContent = copy[id];
+    };
+
+    const clearTrace = () => {
+      $$(".is-dimmed, .is-traced", stage).forEach((element) => {
+        element.classList.remove("is-dimmed", "is-traced");
+      });
+      if (traceText) traceText.textContent = idleTrace();
+    };
+
+    const setTrace = (id) => {
+      $$(".wire, .wire-pulse", stage).forEach((wire) => {
+        const match = wire.getAttribute("data-wire") === id;
+        wire.classList.toggle("is-dimmed", !match);
+        wire.classList.toggle("is-traced", match && wire.classList.contains("wire"));
+      });
+    };
+
+    const traceTarget = (target) => {
+      const device = target.closest(".device");
+      if (device) {
+        const id = device.dataset.device;
+        setTrace(id);
+        showTraceCopy(id);
+        return true;
+      }
+      const callout = target.closest(".scene-callout");
+      if (callout) {
+        showTraceCopy(callout.dataset.callout);
+        return true;
+      }
+      return false;
+    };
+
+    stage.addEventListener("pointerover", (event) => {
+      traceTarget(event.target);
+    });
+
+    stage.addEventListener("pointerout", (event) => {
+      const container = event.target.closest(".device, .scene-callout");
+      if (!container) return;
+      const next = event.relatedTarget;
+      if (next && container.contains(next)) return;
+      clearTrace();
+    });
+
+    stage.addEventListener("focusin", (event) => {
+      traceTarget(event.target);
+    });
+
+    stage.addEventListener("focusout", (event) => {
+      const next = event.relatedTarget;
+      if (next && stage.contains(next)) return;
+      clearTrace();
+    });
+
+    stage.addEventListener("pointerleave", clearTrace);
+
+    if (reduceMotion) return;
 
     let frame = 0;
     let latest = null;
+    let tiltFrame = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let targetX = 0;
+    let targetY = 0;
 
-    const apply = () => {
+    const applySpot = () => {
       frame = 0;
       if (!latest) return;
-      const rect = visual.getBoundingClientRect();
+      const rect = stage.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
-      const x = Math.min(1, Math.max(0, (latest.clientX - rect.left) / rect.width));
-      const y = Math.min(1, Math.max(0, (latest.clientY - rect.top) / rect.height));
-      visual.style.setProperty("--mx", `${(x * 100).toFixed(2)}%`);
-      visual.style.setProperty("--my", `${(y * 100).toFixed(2)}%`);
-      card.style.setProperty("--rx", `${((0.5 - y) * 4.5).toFixed(2)}deg`);
-      card.style.setProperty("--ry", `${((x - 0.5) * 6).toFixed(2)}deg`);
+      const x = clamp((latest.clientX - rect.left) / rect.width, 0, 1);
+      const y = clamp((latest.clientY - rect.top) / rect.height, 0, 1);
+      stage.style.setProperty("--mx", `${(x * 100).toFixed(2)}%`);
+      stage.style.setProperty("--my", `${(y * 100).toFixed(2)}%`);
+      targetY = (x - 0.5) * 5.6;
+      targetX = -(y - 0.5) * 4.2;
     };
 
-    const reset = () => {
+    const animateTilt = () => {
+      tiltFrame = 0;
+      if (!tilt) return;
+      const ease = 0.14;
+      currentX += (targetX - currentX) * ease;
+      currentY += (targetY - currentY) * ease;
+      if (Math.abs(targetX - currentX) < 0.02) currentX = targetX;
+      if (Math.abs(targetY - currentY) < 0.02) currentY = targetY;
+      tilt.style.setProperty("--tilt-x", `${currentX.toFixed(2)}deg`);
+      tilt.style.setProperty("--tilt-y", `${currentY.toFixed(2)}deg`);
+      if (typeof redrawWires === "function") redrawWires();
+      if (currentX !== targetX || currentY !== targetY) {
+        tiltFrame = window.requestAnimationFrame(animateTilt);
+      }
+    };
+
+    const scheduleTilt = () => {
+      if (!tiltFrame) tiltFrame = window.requestAnimationFrame(animateTilt);
+    };
+
+    stage.addEventListener("pointermove", (event) => {
+      if (event.pointerType === "touch") return;
+      latest = event;
+      if (!frame) frame = window.requestAnimationFrame(applySpot);
+      scheduleTilt();
+    }, { passive: true });
+
+    stage.addEventListener("pointerleave", () => {
       latest = null;
       if (frame) window.cancelAnimationFrame(frame);
       frame = 0;
-      visual.style.removeProperty("--mx");
-      visual.style.removeProperty("--my");
-      card.style.setProperty("--rx", "0deg");
-      card.style.setProperty("--ry", "0deg");
-    };
-
-    visual.addEventListener("pointermove", (event) => {
-      if (event.pointerType === "touch") return;
-      latest = event;
-      if (!frame) frame = window.requestAnimationFrame(apply);
-    }, { passive: true });
-
-    visual.addEventListener("pointerleave", reset);
-    visual.addEventListener("pointercancel", reset);
+      stage.style.removeProperty("--mx");
+      stage.style.removeProperty("--my");
+      targetX = 0;
+      targetY = 0;
+      scheduleTilt();
+    });
   }
 
   function bindEvents() {
@@ -1291,8 +1643,12 @@
     const ids = [
       "themeToggle", "menuButton", "mainNav", "scrollProgress", "siteHeader",
       "heroStatus", "heroStatusText", "heroStatusMeta", "heroSignals", "heroPermissions", "heroRequests", "heroRequestsLabel",
-      "heroFingerprint", "heroBrowser", "heroScore", "heroScoreLabel", "heroRing", "heroLocation", "heroIsp",
-      "heroTime", "heroNetworkType", "heroDisplay", "heroHash", "heroFindings", "heroCoordA", "heroCoordB",
+      "heroTime", "heroBench", "heroStage", "heroWires", "heroScore", "heroScoreLabel", "heroRing",
+      "heroBrowser", "heroDisplay", "heroInput", "heroGpu", "heroNetworkType", "heroLocation", "heroCoords",
+      "heroFingerprint", "heroHash", "heroPhoneTime", "heroPhoneLocation", "heroPhoneNetwork", "heroPhoneHash",
+      "heroPhoneOs", "heroPhoneBrowser", "heroPhoneMap", "heroCalloutRequest", "heroCalloutHash", "heroCalloutNetwork",
+      "heroTrace", "heroTraceText", "heroTraceTime", "heroLaptopScore", "heroLaptopHash", "heroLaptopNetwork",
+      "heroLaptopLocation", "heroLeaders", "heroScene", "heroTilt",
       "scanBadge", "scanStatusText", "scanTimestamp", "rescanBtn", "openLedger", "exportJson", "scoreValue",
       "scoreDial", "scoreBand", "scoreCopy", "scoreConfidence", "categoryBars", "manifestDevice", "manifestBrowser",
       "manifestPlatform", "manifestScreen", "manifestGpu", "manifestTouch", "receiptIp", "receiptLocation",
@@ -1322,7 +1678,9 @@
     renderFixes();
     bindEvents();
     initReveal();
-    initHeroMotion();
+    const redrawWires = initHeroWires();
+    initHeroLeaders();
+    initHeroMotion(redrawWires);
     onScroll();
 
     window.addEventListener("scroll", () => {

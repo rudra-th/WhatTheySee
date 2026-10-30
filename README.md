@@ -2,6 +2,8 @@
 
 **A passive browser privacy mirror.** You see a website. It sees a signature.
 
+**Live:** <https://whattheysee.surge.sh/>
+
 WhatTheySee is a static, no-build site that reads the device, display, network and fingerprint signals a normal page can collect without a permission prompt, then turns them into an honest exposure score and a short list of fixes.
 
 ## What it does
@@ -45,6 +47,7 @@ There is no install step, build step or package manager.
 
 Everything needed is in the project root. Upload the whole folder (excluding `tools/`) to any static host.
 
+- **Surge** — deploy a clean copy (without `tools/`) with `surge . whattheysee.surge.sh`. Surge ignores `_headers`, so the CSP and security headers are not applied there.
 - **Netlify Drop** — drag the folder onto <https://app.netlify.com/drop>. `_headers` is applied automatically.
 - **Cloudflare Pages** — create a project, choose "Direct Upload", and upload the folder. `_headers` is applied automatically.
 - **GitHub Pages** — push the site files to a repository, then enable Pages for the branch root. GitHub Pages ignores `_headers`, so the CSP and security headers will not be applied unless you put a proxy/CDN in front.

@@ -820,7 +820,7 @@
     for (const provider of providers) {
       const started = performance.now();
       const controller = new AbortController();
-      const timeoutId = window.setTimeout(() => controller.abort(), 6500);
+      const timeoutId = window.setTimeout(() => controller.abort(), 3200);
       try {
         const response = await fetch(provider.url, {
           mode: "cors",
@@ -862,7 +862,7 @@
           outcome: controller.signal.aborted ? "timeout" : "failed",
           at: new Date().toISOString(),
           ms: elapsed,
-          note: controller.signal.aborted ? "Request timed out after 6.5 seconds." : "CORS, network or provider error. No scan values were sent."
+          note: controller.signal.aborted ? "Request timed out after 3.2 seconds." : "CORS, network or provider error. No scan values were sent."
         });
       }
     }

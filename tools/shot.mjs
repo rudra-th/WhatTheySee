@@ -127,6 +127,7 @@ await send("Emulation.setEmulatedMedia", {
 });
 
 await send("Page.navigate", { url: URL_TO_TEST });
+await waitFor(`document.readyState === "complete"`);
 await evaluate(`localStorage.setItem("wts-theme", ${JSON.stringify(THEME)})`).catch(() => {});
 await send("Page.reload");
 await waitFor(`document.readyState === "complete"`);
